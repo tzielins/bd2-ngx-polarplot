@@ -20,6 +20,7 @@ module.exports = function (config) {
     ],
     preprocessors: {
       './src/test.ts': ['@angular/cli']
+      //'./lib/test.ts': ['@angular/cli']
     },
     mime: {
       'text/x-typescript': ['ts','tsx']

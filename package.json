@@ -2,6 +2,8 @@
   "name": "bd2-ngx-polarplot",
   "version": "0.0.0",
   "license": "MIT",
+  "main": "src/lib/index.ts",
+  "typings": "src/lib/index.ts",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -10,7 +12,7 @@
     "lint": "ng lint",
     "e2e": "ng e2e"
   },
-  "private": true,
+  "private": false,
   "dependencies": {
     "@angular/common": "^4.0.0",
     "@angular/compiler": "^4.0.0",
@@ -22,11 +24,14 @@
     "@angular/router": "^4.0.0",
     "core-js": "^2.4.1",
     "rxjs": "^5.1.0",
-    "zone.js": "^0.8.4"
+    "zone.js": "0.8.5",
+    "d3-ng2-service": "1.9.0"
+
   },
   "devDependencies": {
     "@angular/cli": "1.0.0",
     "@angular/compiler-cli": "^4.0.0",
+    "bootstrap": "^3.3.7",
     "@types/jasmine": "2.5.38",
     "@types/node": "~6.0.60",
     "codelyzer": "~2.0.0",

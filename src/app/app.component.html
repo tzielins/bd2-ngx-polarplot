@@ -1,3 +1,35 @@
 <h1>
   {{title}}
 </h1>
+<div class="container central-area">
+  <div class="row">
+
+    <div class="col-md-6">
+      <div>
+        Some text here some text here some text here and here and here.
+      </div>
+      <input type="text" [(ngModel)]="show">{{value()}}
+      <p (click)="toogle()">Click Me</p>
+      <p (click)="scaleRadius = !scaleRadius">Scale Radius {{scaleRadius}}</p>
+      <p (click)="scaleWidth = !scaleWidth">Scale Width {{scaleWidth}}</p>
+
+      <bd2-ngx-polar-plot [data]="polarData.data" [domain]="polarData.domain" [showIndividuals]="show"
+                          [scaleRadius]="scaleRadius" [scaleWidth]="scaleWidth">
+      </bd2-ngx-polar-plot>
+
+    </div>
+
+    <div class="col-md-6">
+      <div>
+        More text here more text here even more text herere
+        Some text here some text here some text here and here and here.
+        More text here more text here even more text herere
+        Some text here some text here some text here and here and here.
+      </div>
+
+
+    </div>
+  </div>
+
+</div> <!-- /container -->
+
