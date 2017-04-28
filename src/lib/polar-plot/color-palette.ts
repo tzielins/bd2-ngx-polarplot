@@ -1,0 +1,29 @@
+import * as d3 from 'd3-scale';
+
+export class BD2ColorPalette {
+
+  private static smallDataPalette = (d, i) => d3.schemeCategory10[i];
+  private static smallIndexPalette = (i) => d3.schemeCategory10[i];
+  private static mediumDataPalette = (d, i) => d3.schemeCategory20[i % d3.schemeCategory20.length];
+  private static mediumIndexPalette = (i) => d3.schemeCategory20[i % d3.schemeCategory20.length];
+
+  static dataPalette(size: number): (any, number) => string {
+
+    if (size <= d3.schemeCategory10.length) {
+      return BD2ColorPalette.smallDataPalette;
+    } else {
+      return BD2ColorPalette.mediumDataPalette;
+    }
+
+  };
+
+  static indexPalette(size: number): (number) => string {
+
+    if (size <= d3.schemeCategory10.length) {
+      return BD2ColorPalette.smallIndexPalette;
+    } else {
+      return BD2ColorPalette.mediumIndexPalette;
+    }
+
+  };
+}
