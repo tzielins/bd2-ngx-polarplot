@@ -8,6 +8,12 @@ describe('BD2ColorPalette', () => {
     expect(ps(8)).not.toEqual(pm(8));
   });
 
+  it('gives pallet array',()=> {
+    let p = BD2ColorPalette.pallete(3);
+    expect(p.length).toBe(3);
+    expect(p[2]).toBeDefined();
+  })
+
   it('palettes can handle big sizes', () => {
 
     let p = BD2ColorPalette.indexPalette(100);
@@ -34,4 +40,3 @@ describe('BD2ColorPalette', () => {
 
   });
 });
-

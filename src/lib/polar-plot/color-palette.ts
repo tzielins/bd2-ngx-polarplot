@@ -7,6 +7,15 @@ export class BD2ColorPalette {
   private static mediumDataPalette = (d, i) => d3.schemeCategory20[i % d3.schemeCategory20.length];
   private static mediumIndexPalette = (i) => d3.schemeCategory20[i % d3.schemeCategory20.length];
 
+  static pallete(size: number): string[] {
+    let p = [];
+    let f = BD2ColorPalette.indexPalette(size);
+    for (let i=0;i<size;i++) {
+      p.push(f(i));
+    }
+    return p;
+  }
+
   static dataPalette(size: number): (any, number) => string {
 
     if (size <= d3.schemeCategory10.length) {

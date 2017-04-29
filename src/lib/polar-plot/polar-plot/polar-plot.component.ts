@@ -4,6 +4,8 @@ import {
   Component,
   ElementRef,
   Input,
+  Output,
+  EventEmitter,
   NgZone,
   OnChanges,
   OnDestroy,
@@ -75,6 +77,9 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
     this._domain = [domain[0], domain[1], domain[1] - domain[0]];
   };
 
+  @Output()
+  colorsPallete = new EventEmitter<string[]>()
+
   private d3: D3;
   private parentNativeElement: any;
   private polarUtil: PolarDomainUtil;
@@ -92,6 +97,7 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
   private showAllIndividuals = false;
   private showSelectedIndividuals = false;
 
+  private dataPallete: string[];
   private individualPolarData: number[][][];
 
   private lookAndFeel = {
@@ -142,6 +148,8 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
     if (!this.data || !this._domain) {
       return;
     }
+
+    console.log("Changes", changes);
 
     this.showSelectedIndividuals = (this.showIndividuals === "selected");
 
@@ -232,10 +240,12 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
     //the grid is plotted only once, only the lables are updated
     this.updateAxisLabels(this._domain, this.axisGrid);
 
+    this.dataPallete = BD2ColorPalette.pallete(this.data.length);
+    this.colorsPallete.next(this.dataPallete);
 
-    this.plotDataPetals(this.data, this._domain, this.errors, this.scaleRadius, this.scaleWidth, this.mainPane, this.radius);
+    this.plotDataPetals(this.data, this._domain, this.errors, this.scaleRadius, this.scaleWidth, this.dataPallete, this.mainPane, this.radius);
 
-    this.plotAllDataDots(this.data, this._domain, this.showAllIndividuals, this.mainPane, this.radius);
+    this.plotAllDataDots(this.data, this._domain, this.showAllIndividuals, this.dataPallete, this.mainPane, this.radius);
 
     this.plotIndividualDataInset(this.data, this._domain, this.showSelectedIndividuals, this.mainPane, this.radius);
 
@@ -246,6 +256,7 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
 
   plotDataPetals(dataGroups: number[][], domain: number[],
                  errors: number[], scaleRadius: boolean, scaleWidth: boolean,
+                 pallete: string[],
                  mainPane: Selection<SVGGElement, any, null, undefined>, radius: number) {
 
     const transitionsTime = this.lookAndFeel.baseTransitionsTime;
@@ -258,8 +269,8 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
     let petalsWrapper = this.petalsWrapper;
     let petalNodes = this.polarUtil.dataToPetals(dataGroups, domain, scaleRadius, scaleWidth, errors);
 
-
-    let colorsFun = BD2ColorPalette.dataPalette(petalNodes.length);
+    let colorsFun = (d,i) => pallete[i];
+    //let colorsFun = BD2ColorPalette.dataPalette(petalNodes.length);
 
     let petalLine = (p: PetalNode) => {
 
@@ -421,8 +432,8 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
 
     let individuals = this.individualPolarData[ix];
 
-    let pallete = BD2ColorPalette.indexPalette(this.individualPolarData.length);
-    let colorsFun = (d: any) => pallete(d[3]);
+    //let pallete = BD2ColorPalette.indexPalette(this.individualPolarData.length);
+    let colorsFun = (d: any) => this.dataPallete[d[3]];
 
 
     let dots = this.individualDotsInsetWrapper.selectAll(".dotsCircle")
@@ -476,6 +487,7 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
 
 
   plotAllDataDots(dataGroups: number[][], domain: number[], showDots: boolean,
+    pallete: string[],
                   mainPane: Selection<SVGGElement, any, null, undefined>, radius: number) {
 
 
@@ -504,8 +516,8 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
     }));
 
 
-    let pallete = BD2ColorPalette.indexPalette(dotsData.length);
-    let colorsFun = (d: any) => pallete(d[3]);
+    //let pallete = BD2ColorPalette.indexPalette(dotsData.length);
+    let colorsFun = (d: any) => this.dataPallete[d[3]];
 
     let instance = this;
 
