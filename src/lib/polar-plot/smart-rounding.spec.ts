@@ -10,6 +10,15 @@ describe('SmartRounding', () => {
     d.forEach((v, i) => expect(SmartRounder.round(v)).toBe(exp[i]));
   });
 
+  it("centy numbers to for digit", () => {
+
+    let d = [0.1910002, -0.061375445, -0.01023034343];
+    let exp = [0.1910, -0.0614, -0.0102];;
+
+    d.forEach((v, i) => expect(SmartRounder.round(v)).toBe(exp[i]));
+  });
+
+
   it("leaves numbers up to 1000 with two decimals", () => {
 
     let d = [1.0010002, -10.201345445, -101.12800000034343, 900, 3];

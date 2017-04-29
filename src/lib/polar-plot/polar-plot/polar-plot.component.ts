@@ -12,6 +12,7 @@ import {
 } from "@angular/core";
 import {D3, D3Service, Selection} from "d3-ng2-service";
 import {PolarDomainUtil} from "../polar-domain-util";
+import {SmartRounder} from "../smart-rounding";
 import {PetalNode} from "../polar-plot.dom";
 import {BD2ColorPalette} from "../color-palette";
 
@@ -46,7 +47,7 @@ export type ShowIndividualsOptions = "none" | "all" | "selected";
       :host /deep/ .tooltip  {
         font-size: 11px;
       }
-      
+
     `
   ]
 })
@@ -603,7 +604,7 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
       })
       .style("fill", this.lookAndFeel.gridColor)
       .style("stroke", this.lookAndFeel.gridColor)
-      .style("fill-opacity", 0.1);
+      .style("fill-opacity", 0.15);
     //.style("filter" , "url(#glow)");
 
     let axis = axisGrid.selectAll(".axis")
@@ -654,7 +655,7 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
     let axis = axisGrid.selectAll(".axis");
     axis.select("text")
       .text(function (d, i) {
-        return domain[0] + d[2] / 24 * range;
+        return SmartRounder.round(domain[0] + d[2] / 24 * range);
       });
 
   }

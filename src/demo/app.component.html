@@ -1,35 +1,50 @@
 <h1>
-  {{title}}
+  Polar plot demo
 </h1>
 <div class="container central-area">
   <div class="row">
 
-    <div class="col-md-6">
+    <div class="col-md-12">
       <div>
         Some text here some text here some text here and here and here.
       </div>
-      <input type="text" [(ngModel)]="show">{{value()}}
-      <p (click)="toogle()">Click Me</p>
-      <p (click)="scaleRadius = !scaleRadius">Scale Radius {{scaleRadius}}</p>
-      <p (click)="scaleWidth = !scaleWidth">Scale Width {{scaleWidth}}</p>
+    </div>
+  </div>
+  <div class="row">
 
-      <bd2-ngx-polar-plot [data]="polarData.data" [domain]="polarData.domain" [showIndividuals]="show"
+    <div class="col-sm-4">
+      <div>
+        <div class="form-group">
+          <label>Data:</label> <a class="btn btn-primary btn-sm" (click)="generateData()">generate</a>
+          <ul class="list-unstyled" style="margin: 1em;">
+            <li *ngFor="let row of data">{{row}}</li>
+          </ul>
+        </div>
+        <div class="form-group">
+        <label>Show individuals</label> <select class="form-control" [(ngModel)]="indiv">
+          <option>none</option>
+          <option>selected</option>
+          <option>all</option>
+        </select>
+                </div>
+
+        <div class="form-group">
+        <label>Scale Radius:</label> <a class="btn btn-primary btn-sm" (click)="scaleRadius = !scaleRadius">{{scaleRadius ? 'On' : 'Off'}}</a>
+</div>
+        <div class="form-group">
+        <label>Scale Width:</label> <a class="btn btn-primary btn-sm" (click)="scaleWidth = !scaleWidth">{{scaleWidth ? 'On' : 'Off'}}</a>
+      </div>
+      </div>
+    </div>
+
+    <div class="col-sm-6">
+
+      <bd2-ngx-polar-plot [data]="data" [domain]="domain" [showIndividuals]="indiv"
                           [scaleRadius]="scaleRadius" [scaleWidth]="scaleWidth">
       </bd2-ngx-polar-plot>
 
     </div>
 
-    <div class="col-md-6">
-      <div>
-        More text here more text here even more text herere
-        Some text here some text here some text here and here and here.
-        More text here more text here even more text herere
-        Some text here some text here some text here and here and here.
-      </div>
-
-
-    </div>
   </div>
 
 </div> <!-- /container -->
-

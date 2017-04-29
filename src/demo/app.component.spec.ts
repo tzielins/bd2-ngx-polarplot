@@ -31,6 +31,21 @@ describe('AppComponent', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('h1').textContent).toContain('app works!');
+    expect(compiled.querySelector('h1').textContent).toContain('Polar plot demo');
   }));
+
+  it('generateData',()=> {
+    const fixture = TestBed.createComponent(AppComponent);
+    let data = fixture.componentInstance.generateData();
+    expect(data).toBeDefined();
+    expect(data.length).toBeGreaterThanOrEqual(2);
+    expect(data.length).toBeLessThan(7);
+
+    expect(data[1].length).toBeGreaterThanOrEqual(1);
+    expect(data[1].length).toBeLessThan(6);
+
+
+    console.log("D",data);
+
+  })
 });
