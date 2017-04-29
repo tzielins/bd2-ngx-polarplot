@@ -27,21 +27,6 @@ getTestBed().initTestEnvironment(
   platformBrowserDynamicTesting()
 );
 
-/*
-const context2 = require.context('../lib', true, /\.spec\.ts$/);
-
-context2.keys().map( k => console.log("K ",k));
-//console.log("Keys2",context2.keys());
-
-context2.keys().map(context2);
-
-const context1 = require.context('./', true, /\.spec\.ts$/);
-context1.keys().map(context1);
-
-console.log("Keys",context1.keys());
-
-const context = context1;
-*/
 
 // Then we find all the tests.
 const context = require.context('./', true, /\.spec\.ts$/);
