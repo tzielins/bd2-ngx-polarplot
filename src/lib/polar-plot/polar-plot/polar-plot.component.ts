@@ -22,14 +22,6 @@ import {BD2ColorPalette} from "../color-palette";
 
 /**
 
- https://gist.github.com/nbremer/21746a9668ffdf6d8242
- https://bl.ocks.org/mbostock/4583749
-
- https://github.com/tomwanzek/d3-ng2-service
- https://tomwanzek.github.io/d3-ng2-demo/
- https://github.com/tomwanzek/d3-ng2-demo/blob/master/src/app/d3-demos/brush-zoom-2/brush-zoom-2.component.ts
-
- https://github.com/d3/d3/blob/master/CHANGES.md#shapes-d3-shape
 
  */
 

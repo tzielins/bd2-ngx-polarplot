@@ -11,8 +11,19 @@ The domain rain is cyclic, so the data are mod range, ie data 3, 27, 28 will be 
 as 3, 3, 4.
 
 The petals represents the mean value of the series. Petals radius and width can be scaled by std dev of the data or the provided error values.
-   
+
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.0.0.
+
+## Credits
+
+Integration with D3 is based on the code from d3-ng2-service
+by Tom Wanzek, https://github.com/tomwanzek/d3-ng2-service
+The d3-ng2-service was actually used during development but then removed to reduce the dependencies and bundle size.
+
+The axis grid is based on the radar plot implementation by Nadieh Bremer: https://gist.github.com/nbremer/21746a9668ffdf6d8242, https://www.visualcinnamon.com/2015/10/different-look-d3-radar-chart.html
+
+The examples for Tom Wanzek https://tomwanzek.github.io/d3-ng2-demo/ were also of great help.
+
 
 ## Development server
 
