@@ -12,6 +12,16 @@
     "lint": "ng lint",
     "e2e": "ng e2e"
   },
+  "keywords": [
+    "d3",
+    "d3 4.x",
+    "angular2",
+    "angular4",
+    "ng2",
+    "ngx",
+    "polar plot",
+    "phase plot"
+  ],
   "private": false,
   "author": {
     "name": "Tomasz Zielinski",
