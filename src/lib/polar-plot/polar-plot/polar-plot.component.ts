@@ -149,7 +149,7 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
       return;
     }
 
-    console.log("Changes", changes);
+    //console.log("Changes", changes);
 
     this.showSelectedIndividuals = (this.showIndividuals === "selected");
 
