@@ -1,6 +1,5 @@
 import { async, fakeAsync, tick, ComponentFixture, TestBed} from '@angular/core/testing';
 import {By} from '@angular/platform-browser';
-import { D3Service } from 'd3-ng2-service';
 
 import { PolarPlotComponent } from './polar-plot.component';
 import {PetalNode} from "../polar-plot.dom";
@@ -14,7 +13,7 @@ describe('PolarPlotComponent', () => {
     TestBed.configureTestingModule({
       imports: [],
       declarations: [ PolarPlotComponent ],
-      providers: [D3Service]
+      providers: []
     })
     .compileComponents();
   }));

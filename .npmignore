@@ -40,7 +40,7 @@ testem.log
 /e2e/*.js
 /e2e/*.map
 
-/src/*.spec.ts
+/src/**/*.spec.ts
 
 # System Files
 .DS_Store

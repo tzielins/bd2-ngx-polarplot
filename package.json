@@ -25,7 +25,20 @@
     "core-js": "^2.4.1",
     "rxjs": "^5.1.0",
     "zone.js": "0.8.5",
-    "d3-ng2-service": "1.9.0"
+    "@types/d3-array": "1.2",
+    "@types/d3-axis": "1.0",
+    "@types/d3-scale": "1.0",
+    "@types/d3-selection": "1.0",
+    "@types/d3-selection-multi": "1.0",
+    "@types/d3-shape": "1.0",
+    "@types/d3-transition": "1.0",
+    "d3-array": "1.2",
+    "d3-axis": "1.0",
+    "d3-scale": "1.0",
+    "d3-selection": "1.0",
+    "d3-selection-multi": "1.0",
+    "d3-shape": "1.0",
+    "d3-transition": "1.0"
 
   },
   "devDependencies": {

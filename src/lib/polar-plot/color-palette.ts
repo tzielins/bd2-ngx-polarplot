@@ -1,4 +1,4 @@
-import * as d3 from 'd3-scale';
+import {d3} from "../d3service";
 
 export class BD2ColorPalette {
 

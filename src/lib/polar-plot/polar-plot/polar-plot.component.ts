@@ -12,7 +12,7 @@ import {
   OnInit,
   SimpleChanges
 } from "@angular/core";
-import {D3, D3Service, Selection} from "d3-ng2-service";
+import {D3, d3, Selection} from "../../d3service";
 import {PolarDomainUtil} from "../polar-domain-util";
 import {SmartRounder} from "../smart-rounding";
 import {PetalNode} from "../polar-plot.dom";
@@ -124,8 +124,9 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
   };
 
 
-  constructor(private ngZone: NgZone, private changeDetectorRef: ChangeDetectorRef, element: ElementRef, d3Service: D3Service) {
-    this.d3 = d3Service.getD3();
+  constructor(private ngZone: NgZone, private changeDetectorRef: ChangeDetectorRef, element: ElementRef) {
+    this.d3 = d3;
+    //this.d3 = d3Service.getD3();
     this.parentNativeElement = element.nativeElement;
     this.polarUtil = new PolarDomainUtil();
 
