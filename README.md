@@ -1,5 +1,17 @@
 # Bd2NgxPolarplot
 
+Angular2 (well Angular) component for plotting data in cyclic coordinates.
+
+Although it is called polar plot, it is not the de-facto polar plot in the sense in the matlab,
+as the data are one dimensional rather then angle/radius in typical polar plot.
+
+It was designed to plot circadian phases, so peak times in data in 24 scale.
+
+The domain rain is cyclic, so the data are mod range, ie data 3, 27, 28 will be plotted
+as 3, 3, 4.
+
+The petals represents the mean value of the series. Petals radius and width can be scaled by std dev of the data or the provided error values.
+   
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.0.0.
 
 ## Development server
