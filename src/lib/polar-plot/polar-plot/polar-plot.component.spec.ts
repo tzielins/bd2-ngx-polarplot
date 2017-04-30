@@ -3,8 +3,10 @@ import {By} from '@angular/platform-browser';
 import { D3Service } from 'd3-ng2-service';
 
 import { PolarPlotComponent } from './polar-plot.component';
+import {PetalNode} from "../polar-plot.dom";
+import {PolarDomainUtil} from "../polar-domain-util";
 
-fdescribe('PolarPlotComponent', () => {
+describe('PolarPlotComponent', () => {
   let component: PolarPlotComponent;
   let fixture: ComponentFixture<PolarPlotComponent>;
 
@@ -27,8 +29,37 @@ fdescribe('PolarPlotComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('can create a plot with one data point',async(() => {
-    component.data = [[15, 16]];
+  it('prepareIndividualPolarData converts to polar and adds color ix',() => {
+
+    let data = [[15, 16],[2,2],[3]];
+    let domain = [0,24,24];
+
+    let ans: number[][][] = component.prepareIndividualPolarData(data,domain);
+    expect(ans).toBeTruthy();
+    expect(ans.length).toBe(3);
+    expect(ans[2].length).toBe(1);
+    expect(ans[2][0][3]).toBe(2)
+  })
+
+  it('emits new palete after update',async(() => {
+
+    component.data = [[15, 16],[2],[3]];
+    component.domain = [12,24];
+
+    let pallete: string[];
+    component.colorsPallete.subscribe( p => pallete = p);
+
+    component.updatePlot();
+    fixture.whenStable().then( () => {
+
+    expect(pallete).toBeDefined();
+    expect(pallete.length).toBe(3);
+    });
+
+  }));
+
+  it('creates a plot with two petals and data points',async(() => {
+    component.data = [[15, 16],[2]];
     component.domain = [12,24];
     component.showIndividuals = "all";
 
@@ -50,17 +81,46 @@ fdescribe('PolarPlotComponent', () => {
 
       //the petal
       expect(compiled.querySelector('.polarplot .petalsWrapper')).toBeTruthy();
-      expect(compiled.querySelectorAll('.polarplot .petalsWrapper .petal').length).toBe(1);
-      expect(compiled.querySelectorAll('.polarplot .petalsWrapper .petal path').length).toBe(2);
-      expect(compiled.querySelectorAll('.polarplot .petalsWrapper .petal circle').length).toBe(1);
+      expect(compiled.querySelectorAll('.polarplot .petalsWrapper .petal').length).toBe(2);
+      expect(compiled.querySelectorAll('.polarplot .petalsWrapper .petal path').length).toBe(4);
+      expect(compiled.querySelectorAll('.polarplot .petalsWrapper .petal circle').length).toBe(2);
 
       //indiv
       expect(compiled.querySelector('.polarplot .dotsWrapper')).toBeTruthy();
-      expect(compiled.querySelectorAll('.polarplot .dotsWrapper .dotsGroup').length).toBe(1);
-      expect(compiled.querySelectorAll('.polarplot .dotsWrapper .dotsGroup circle').length).toBe(2);
+      expect(compiled.querySelectorAll('.polarplot .dotsWrapper .dotsGroup').length).toBe(2);
+      expect(compiled.querySelectorAll('.polarplot .dotsWrapper .dotsGroup circle').length).toBe(3);
+
+      //individualDotsInsetWrapper
+      expect(compiled.querySelector('.polarplot .dotsInset')).toBeTruthy();
 
       //console.log(compiled.querySelectorAll('.polarplot .axisWrapper .gridCircle').constructor.name);
     });
 
   }));
+
+
+  it('shows inset with individual data points',async(() => {
+    component.data = [[15],[2,1,3]];
+    component.domain = [12,24];
+    component.showIndividuals = "selected";
+
+    let p = (new PolarDomainUtil()).dataToPetal([2,1,3],[0,24,24]);
+    //have to call it manually fixture detectChanges does not work
+    component.ngOnChanges({});
+    component.showIndividualDataInset(p, 1, 1);
+    //fixture.detectChanges();
+
+    fixture.whenStable().then( () => {
+      const compiled = fixture.debugElement.nativeElement;
+
+      //individualDotsInsetWrapper
+      expect(compiled.querySelector('.polarplot .dotsInset')).toBeTruthy();
+      expect(compiled.querySelectorAll('.polarplot .dotsInset circle').length).toBe(3);
+      //console.log(compiled.querySelectorAll('.polarplot .axisWrapper .gridCircle').constructor.name);
+    });
+
+  }));
+
+
+
 });

@@ -195,7 +195,7 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
 
   }
 
-  plotTooltip(pane: Selection<SVGGElement, any, null, undefined>, radius: number): Selection<SVGGElement, any, null, undefined> {
+  prepareTooltip(pane: Selection<SVGGElement, any, null, undefined>, radius: number): Selection<SVGGElement, any, null, undefined> {
 
     if (!this.tooltip) {
       //Set up the small tooltip for when you hover over a circle
@@ -243,13 +243,15 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
     this.dataPallete = BD2ColorPalette.pallete(this.data.length);
     this.colorsPallete.next(this.dataPallete);
 
+    this.individualPolarData = this.prepareIndividualPolarData(this.data, this._domain);
+
     this.plotDataPetals(this.data, this._domain, this.errors, this.scaleRadius, this.scaleWidth, this.dataPallete, this.mainPane, this.radius);
 
-    this.plotAllDataDots(this.data, this._domain, this.showAllIndividuals, this.dataPallete, this.mainPane, this.radius);
+    this.plotAllDataDots(this.individualPolarData, this.showAllIndividuals, this.dataPallete, this.mainPane, this.radius);
 
-    this.plotIndividualDataInset(this.data, this._domain, this.showSelectedIndividuals, this.mainPane, this.radius);
+    this.prepareIndividualDataInset(this.mainPane, this.radius);
 
-    this.plotTooltip(this.mainPane, this.radius);
+    this.prepareTooltip(this.mainPane, this.radius);
 
   }
 
@@ -386,23 +388,22 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
   }
 
 
-  plotIndividualDataInset(dataGroups: number[][], domain: number[], showSelected: boolean,
-                          mainPane: Selection<SVGGElement, any, null, undefined>, radius: number) {
+  prepareIndividualPolarData(dataGroups: number[][], domain: number[]): number[][][] {
+    //append group index to the data so the colors can be generated for each data point (ix is for the parrent so it would
+    //not be available
+    return dataGroups.map((g, ix) => g.map(a => {
+      let v = this.polarUtil.calculatePolarCoordinate(a, domain);
+      v.push(ix);
+      return v;
+    }));
+  }
+
+  prepareIndividualDataInset(mainPane: Selection<SVGGElement, any, null, undefined>, radius: number) {
 
     if (!this.individualDotsInsetWrapper) {
       this.individualDotsInsetWrapper = mainPane.append<SVGGElement>("g").attr("class", "dotsInset");
     }
 
-    if (showSelected) {
-      //append group index to the data so the colors can be generated for each data point (ix is for the parrent so it would
-      //not be available
-      this.individualPolarData = dataGroups.map((g, ix) => g.map(a => {
-        let v = this.polarUtil.calculatePolarCoordinate(a, domain);
-        v.push(ix);
-        return v;
-      }));
-
-    }
     //the actual plotting happens in showIndividuals as it is data depended
 
     //we always hide it with new data first;
@@ -410,7 +411,7 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
   }
 
   hideIndividualDataInset() {
-    if (!this.individualDotsInsetWrapper || !this.individualPolarData) {
+    if (!this.individualDotsInsetWrapper) {
       return;
     }
 
@@ -486,7 +487,7 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
   }
 
 
-  plotAllDataDots(dataGroups: number[][], domain: number[], showDots: boolean,
+  plotAllDataDots(dotsData: number[][][], showDots: boolean,
     pallete: string[],
                   mainPane: Selection<SVGGElement, any, null, undefined>, radius: number) {
 
@@ -507,16 +508,7 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
       this.dotsWrapper.style('opacity', 1);
     }
 
-    //append group index to the data so the colors can be generated for each data point (ix is for the parrent so it would
-    //not be available
-    let dotsData = dataGroups.map((g, ix) => g.map(a => {
-      let v = this.polarUtil.calculatePolarCoordinate(a, domain);
-      v.push(ix);
-      return v;
-    }));
 
-
-    //let pallete = BD2ColorPalette.indexPalette(dotsData.length);
     let colorsFun = (d: any) => this.dataPallete[d[3]];
 
     let instance = this;

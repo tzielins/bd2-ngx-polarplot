@@ -45,7 +45,7 @@ describe('AppComponent', () => {
     expect(data[1].length).toBeLessThan(6);
 
 
-    console.log("D",data);
+    //console.log("D",data);
 
   })
 });
