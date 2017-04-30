@@ -1,6 +1,7 @@
 import {
   AfterViewInit,
   ChangeDetectorRef,
+  ChangeDetectionStrategy,
   Component,
   ElementRef,
   Input,
@@ -29,6 +30,7 @@ export type ShowIndividualsOptions = "none" | "all" | "selected";
 
 @Component({
   selector: 'bd2-ngx-polar-plot',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="polarplot"></div>
   `,

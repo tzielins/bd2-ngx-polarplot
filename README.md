@@ -24,6 +24,7 @@ The axis grid is based on the radar plot implementation by Nadieh Bremer: https:
 
 The examples for Tom Wanzek https://tomwanzek.github.io/d3-ng2-demo/ were also of great help.
 
+Optimization by using ngZone and ChangeDetectionStrategy tricks inspired by articles by Pascal Precht: https://blog.thoughtram.io/angular/2017/02/02/making-your-angular-app-fast.html https://blog.thoughtram.io/angular/2017/02/21/using-zones-in-angular-for-better-performance.html
 
 ## Development server
 
