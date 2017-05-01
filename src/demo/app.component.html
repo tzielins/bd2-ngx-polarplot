@@ -1,13 +1,20 @@
-<h1>
-  Polar plot demo
-</h1>
 <div class="container central-area">
   <div class="row">
 
     <div class="col-md-12">
+      <h1>
+        Polar plot demo
+      </h1>
+
       <div>
-        Some text here some text here some text here and here and here.
+        <p>
+        Simple demo of circadian polar plot. It is not a polar plot in the sense of polar coordinates (radius/angle),
+        but it represents "cyclic data" i.e. modulo domain range.
+        </p>
+        <p>Generated data always contains fixed two first series: first one demonstrate data with peak times ~(1h+n24h), second a simple data spread.</p>
+        <p>Petals points to the mean of the input series, their width and radius can be scaled by std dev od the data.</p>
       </div>
+      <hr>
     </div>
   </div>
   <div class="row">
@@ -15,25 +22,34 @@
     <div class="col-sm-4">
       <div>
         <div class="form-group">
-          <label>Data:</label> <a class="btn btn-primary btn-sm" (click)="generateData()">generate</a>
+          <a class="btn btn-primary btn-sm" (click)="generateData()">generate</a>
+        </div>
+        <div class="form-group">
+          <label>Data:</label>
           <ul class="list-unstyled" style="margin: 1em;">
-            <li *ngFor="let row of data">{{row}}</li>
+            <li *ngFor="let row of data">[{{row}}],</li>
           </ul>
         </div>
         <div class="form-group">
-        <label>Show individuals</label> <select class="form-control" [(ngModel)]="indiv">
+          <label>Domain:</label>
+          <span>[{{domain}}]</span>
+        </div>
+        <div class="form-group">
+          <label>Show individuals</label> <select class="form-control" [(ngModel)]="indiv">
           <option>none</option>
           <option>selected</option>
           <option>all</option>
         </select>
-                </div>
+        </div>
 
         <div class="form-group">
-        <label>Scale Radius:</label> <a class="btn btn-primary btn-sm" (click)="scaleRadius = !scaleRadius">{{scaleRadius ? 'On' : 'Off'}}</a>
-</div>
+          <label>Scale Radius:</label> <a class="btn btn-primary btn-sm" (click)="scaleRadius = !scaleRadius">
+          {{scaleRadius ? 'On' : 'Off'}}</a>
+        </div>
         <div class="form-group">
-        <label>Scale Width:</label> <a class="btn btn-primary btn-sm" (click)="scaleWidth = !scaleWidth">{{scaleWidth ? 'On' : 'Off'}}</a>
-      </div>
+          <label>Scale Width:</label> <a class="btn btn-primary btn-sm" (click)="scaleWidth = !scaleWidth">
+          {{scaleWidth ? 'On' : 'Off'}}</a>
+        </div>
       </div>
     </div>
 
