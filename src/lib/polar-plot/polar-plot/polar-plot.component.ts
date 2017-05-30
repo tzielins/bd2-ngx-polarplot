@@ -16,7 +16,7 @@ import {
 import {D3, d3, Selection} from "../../d3service";
 import {PolarDomainUtil} from "../polar-domain-util";
 import {SmartRounder} from "../smart-rounding";
-import {PetalNode} from "../polar-plot.dom";
+import {PetalNode, PolarPoint} from "../polar-plot.dom";
 import {BD2ColorPalette} from "../color-palette";
 
 
@@ -27,6 +27,11 @@ import {BD2ColorPalette} from "../color-palette";
  */
 
 export type ShowIndividualsOptions = "none" | "all" | "selected";
+
+export class GraphicContext {
+
+  palette: string[];
+}
 
 @Component({
   selector: 'bd2-ngx-polar-plot',
@@ -71,8 +76,14 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
     this._domain = [domain[0], domain[1], domain[1] - domain[0]];
   };
 
+  @Input()
+  palette: string[] = [];
+
+  @Input()
+  labels: string[] = [];
+
   @Output()
-  colorsPallete = new EventEmitter<string[]>()
+  colors = new EventEmitter<string[]>()
 
   private d3: D3;
   private parentNativeElement: any;
@@ -91,8 +102,10 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
   private showAllIndividuals = false;
   private showSelectedIndividuals = false;
 
-  private dataPallete: string[];
-  private individualPolarData: number[][][];
+  //private dataPallete: string[];
+  private individualPolarData: PolarPoint[][];
+
+  private graphicContext = new GraphicContext();
 
   private lookAndFeel = {
     baseTransitionsTime: 400,
@@ -223,6 +236,7 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
   }
 
 
+
   updatePlot() {
 
     if (!this.d3Svg) {
@@ -235,14 +249,18 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
     //the grid is plotted only once, only the lables are updated
     this.updateAxisLabels(this._domain, this.axisGrid);
 
-    this.dataPallete = BD2ColorPalette.pallete(this.data.length);
-    this.colorsPallete.next(this.dataPallete);
+    this.graphicContext = this.updatePalette(this.data,this.palette,this.graphicContext);
+    //this.dataPallete = this.graphicContext.palette;
 
-    this.individualPolarData = this.prepareIndividualPolarData(this.data, this._domain);
+    let petalNodes = this.polarUtil.dataToPetals(this.data, this._domain, this.scaleRadius, this.scaleWidth, this.errors);
+    this.colorPetals(petalNodes, this.graphicContext.palette);
 
-    this.plotDataPetals(this.data, this._domain, this.errors, this.scaleRadius, this.scaleWidth, this.dataPallete, this.mainPane, this.radius);
 
-    this.plotAllDataDots(this.individualPolarData, this.showAllIndividuals, this.dataPallete, this.mainPane, this.radius);
+    this.individualPolarData = this.prepareIndividualPolarData(this.data, this._domain, this.graphicContext.palette);
+
+    this.plotDataPetals(petalNodes, this.scaleRadius, this.scaleWidth, this.mainPane, this.radius);
+
+    this.plotAllDataDots(this.individualPolarData, this.showAllIndividuals, this.mainPane, this.radius);
 
     this.prepareIndividualDataInset(this.mainPane, this.radius);
 
@@ -250,10 +268,23 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
 
   }
 
+  updatePalette(data: any[], palette: string[], context: GraphicContext): GraphicContext {
+    if (!palette || palette.length === 0) {
+      palette = BD2ColorPalette.palette(data.length);
+    }
 
-  plotDataPetals(dataGroups: number[][], domain: number[],
-                 errors: number[], scaleRadius: boolean, scaleWidth: boolean,
-                 pallete: string[],
+    palette = BD2ColorPalette.extendPalette(palette, data.length);
+    context.palette = palette;
+    this.colors.next(palette.slice());
+    return context;
+  }
+
+  colorPetals(petals: PetalNode[], palette: string[]) {
+    petals.forEach( (b,ix) => b.color = palette[ix]);
+  }
+
+  plotDataPetals(petalNodes: PetalNode[],
+                 scaleRadius: boolean, scaleWidth: boolean,
                  mainPane: Selection<SVGGElement, any, null, undefined>, radius: number) {
 
     const transitionsTime = this.lookAndFeel.baseTransitionsTime;
@@ -264,10 +295,6 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
     }
 
     let petalsWrapper = this.petalsWrapper;
-    let petalNodes = this.polarUtil.dataToPetals(dataGroups, domain, scaleRadius, scaleWidth, errors);
-
-    let colorsFun = (d,i) => pallete[i];
-    //let colorsFun = BD2ColorPalette.dataPalette(petalNodes.length);
 
     let petalLine = (p: PetalNode) => {
 
@@ -320,7 +347,7 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
         .append("path")
         .attr("class", "petalsArea")
         .attr("d", <any>petalLine)
-        .style("fill", colorsFun)
+        .style("fill", d => d.color)
         .style("fill-opacity", 0)
         .on('mouseover', function (d, i) {
 
@@ -353,7 +380,7 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
         .attr("class", "petalsLine")
         .attr("d", <any>petalLine)
         .style("stroke-width", this.lookAndFeel.petalLineWidth)
-        .style("stroke", colorsFun)
+        .style("stroke", d => d.color)
         .style("fill", "none")
         .style("stroke-opacity", 1)
       ;
@@ -370,7 +397,7 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
           return radius * d.polarCoordinates[1]; // Math.sin(d * 2 * Math.PI / 24 - Math.PI / 2);
         })
         .attr("r", this.lookAndFeel.petalCircleRadius)
-        .style("fill", colorsFun)
+        .style("fill", d => d.color)
         .style("fill-opacity", this.lookAndFeel.petalCircleOpacity);
 
       petals.exit()
@@ -383,12 +410,11 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
   }
 
 
-  prepareIndividualPolarData(dataGroups: number[][], domain: number[]): number[][][] {
+  prepareIndividualPolarData(dataGroups: number[][], domain: number[], palette: string[]): PolarPoint[][] {
     //append group index to the data so the colors can be generated for each data point (ix is for the parrent so it would
     //not be available
     return dataGroups.map((g, ix) => g.map(a => {
-      let v = this.polarUtil.calculatePolarCoordinate(a, domain);
-      v.push(ix);
+      let v = new PolarPoint(this.polarUtil.calculatePolarCoordinate(a, domain), palette[ix]);
       return v;
     }));
   }
@@ -428,8 +454,6 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
 
     let individuals = this.individualPolarData[ix];
 
-    //let pallete = BD2ColorPalette.indexPalette(this.individualPolarData.length);
-    let colorsFun = (d: any) => this.dataPallete[d[3]];
 
 
     let dots = this.individualDotsInsetWrapper.selectAll(".dotsCircle")
@@ -441,16 +465,13 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
       .style('opacity', 0.2)
       .attr("cx", radius * p.polarCoordinates[0])
       .attr("cy", radius * p.polarCoordinates[1])
-      .style("stroke", colorsFun)
-      .style("fill", colorsFun)
+      .style("stroke", p.color)
+      .style("fill", p.color)
       .transition().duration(transitionsTime)
       .style('opacity', 1)
-      .attr("cx", function (d: number[], i) {
-        return radius * d[0]; //Math.cos(d * 2 * Math.PI / 24 - Math.PI / 2);
-      })
-      .attr("cy", function (d: number[], i) {
-        return radius * d[1]; // Math.sin(d * 2 * Math.PI / 24 - Math.PI / 2);
-      });
+      .attr("cx", d => radius * d.xy[0])
+      .attr("cy", d => radius * d.xy[1]) // Math.sin(d * 2 * Math.PI / 24 - Math.PI / 2);
+      ;
 
     //new dots
     dots.enter()
@@ -461,18 +482,14 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
       .attr("cy", radius * p.polarCoordinates[1])
       .attr("r", this.lookAndFeel.dotsCircleRadius)
       .style("stroke-width", this.lookAndFeel.dotsCircleStrokeWidth)
-      .style("stroke", colorsFun)
-      .style("fill", colorsFun)
+      .style("stroke", p.color)
+      .style("fill", p.color)
       .style("fill-opacity", this.lookAndFeel.dotsCircleFillOpacity)
       .transition().duration(transitionsTime)
       .style('opacity', 1)
-      .attr("cx", function (d: number[], i) {
-        return radius * d[0]; //Math.cos(d * 2 * Math.PI / 24 - Math.PI / 2);
-      })
-      .attr("cy", function (d: number[], i) {
-        return radius * d[1]; // Math.sin(d * 2 * Math.PI / 24 - Math.PI / 2);
-      });
-
+      .attr("cx", d => radius * d.xy[0])
+      .attr("cy", d => radius * d.xy[1]) // Math.sin(d * 2 * Math.PI / 24 - Math.PI / 2);
+      ;
     //exit
     dots.exit()
       .remove();
@@ -482,8 +499,7 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
   }
 
 
-  plotAllDataDots(dotsData: number[][][], showDots: boolean,
-    pallete: string[],
+  plotAllDataDots(dotsData: PolarPoint[][], showDots: boolean,
                   mainPane: Selection<SVGGElement, any, null, undefined>, radius: number) {
 
 
@@ -503,9 +519,6 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
       this.dotsWrapper.style('opacity', 1);
     }
 
-
-    let colorsFun = (d: any) => this.dataPallete[d[3]];
-
     let instance = this;
 
 
@@ -521,27 +534,20 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
 
       dotsInExisting
         .transition().duration(transitionsTime)
-        .attr("cx", function (d: number[], i) {
-          return radius * d[0]; //Math.cos(d * 2 * Math.PI / 24 - Math.PI / 2);
-        })
-        .attr("cy", function (d: number[], i) {
-          return radius * d[1]; // Math.sin(d * 2 * Math.PI / 24 - Math.PI / 2);
-        });
+        .attr("cx", d => radius * d.xy[0])
+        .attr("cy", d => radius * d.xy[1]) // Math.sin(d * 2 * Math.PI / 24 - Math.PI / 2);
+        ;
 
       dotsInExisting.enter()
         .append("circle")
         .transition().duration(transitionsTime)
         .attr("class", "dotsCircle")
-        .attr("cx", function (d: number[], i) {
-          return radius * d[0]; //Math.cos(d * 2 * Math.PI / 24 - Math.PI / 2);
-        })
-        .attr("cy", function (d: number[], i) {
-          return radius * d[1]; // Math.sin(d * 2 * Math.PI / 24 - Math.PI / 2);
-        })
+        .attr("cx", d => radius * d.xy[0])
+        .attr("cy", d => radius * d.xy[1]) // Math.sin(d * 2 * Math.PI / 24 - Math.PI / 2);
         .attr("r", this.lookAndFeel.dotsCircleRadius)
         .style("stroke-width", this.lookAndFeel.dotsCircleStrokeWidth)
-        .style("stroke", colorsFun)
-        .style("fill", colorsFun)
+        .style("stroke", d => d.color)
+        .style("fill", d => d.color)
         .style("fill-opacity", this.lookAndFeel.dotsCircleFillOpacity);
 
 
@@ -562,16 +568,12 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
         .append("circle")
         .transition().duration(transitionsTime)
         .attr("class", "dotsCircle")
-        .attr("cx", function (d: number[], i) {
-          return radius * d[0]; //Math.cos(d * 2 * Math.PI / 24 - Math.PI / 2);
-        })
-        .attr("cy", function (d: number[], i) {
-          return radius * d[1]; // Math.sin(d * 2 * Math.PI / 24 - Math.PI / 2);
-        })
+        .attr("cx", d => radius * d.xy[0])
+        .attr("cy", d => radius * d.xy[1]) // Math.sin(d * 2 * Math.PI / 24 - Math.PI / 2);
         .attr("r", this.lookAndFeel.dotsCircleRadius)
         .style("stroke-width", this.lookAndFeel.dotsCircleStrokeWidth)
-        .style("stroke", colorsFun)
-        .style("fill", colorsFun)
+        .style("stroke", d => d.color)
+        .style("fill", d => d.color)
         .style("fill-opacity", this.lookAndFeel.dotsCircleFillOpacity);
 
       //dotsGroup exit section

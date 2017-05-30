@@ -2,8 +2,9 @@ import { async, fakeAsync, tick, ComponentFixture, TestBed} from '@angular/core/
 import {By} from '@angular/platform-browser';
 
 import { PolarPlotComponent } from './polar-plot.component';
-import {PetalNode} from "../polar-plot.dom";
+import {PetalNode, PolarPoint} from "../polar-plot.dom";
 import {PolarDomainUtil} from "../polar-domain-util";
+import {BD2ColorPalette} from "../color-palette";
 
 describe('PolarPlotComponent', () => {
   let component: PolarPlotComponent;
@@ -32,12 +33,12 @@ describe('PolarPlotComponent', () => {
 
     let data = [[15, 16],[2,2],[3]];
     let domain = [0,24,24];
-
-    let ans: number[][][] = component.prepareIndividualPolarData(data,domain);
+    let palette = BD2ColorPalette.palette(data.length);
+    let ans: PolarPoint[][] = component.prepareIndividualPolarData(data,domain,palette);
     expect(ans).toBeTruthy();
     expect(ans.length).toBe(3);
     expect(ans[2].length).toBe(1);
-    expect(ans[2][0][3]).toBe(2)
+    expect(ans[2][0].color).toBe(palette[2])
   })
 
   it('emits new palete after update',async(() => {
@@ -46,7 +47,7 @@ describe('PolarPlotComponent', () => {
     component.domain = [12,24];
 
     let pallete: string[];
-    component.colorsPallete.subscribe( p => pallete = p);
+    component.colors.subscribe( p => pallete = p);
 
     component.updatePlot();
     fixture.whenStable().then( () => {
