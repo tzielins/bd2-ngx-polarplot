@@ -31,7 +31,40 @@ export type ShowIndividualsOptions = "none" | "all" | "selected";
 export class GraphicContext {
 
   palette: string[];
+
+  mainPane: Selection<SVGGElement, any, null, undefined>;
+  axisGrid: Selection<SVGGElement, any, null, undefined>;
+  petalsWrapper: Selection<SVGGElement, any, null, undefined>;
+  dotsWrapper: Selection<SVGGElement, any, null, undefined>;
+  individualDotsInsetWrapper: Selection<SVGGElement, any, null, undefined>;
+  tooltip: Selection<SVGGElement, any, null, undefined>;
+
+  radius: number;
 }
+
+export class LookAndFeel {
+  baseTransitionsTime = 400;
+
+  gridColor = "#CDCDCD";
+  axisColor = "white";
+  axisWidth = "2px";
+
+  //done by css
+  //axisFontSize: "10px",
+  //tooltipFontSize: "11px",
+
+  dotsCircleRadius = 4;
+  dotsCircleStrokeWidth = '1px';
+  dotsCircleFillOpacity = 0.5;
+
+  petalAreaOpacity = 0.35;
+  petalAreaOpacityActive = 0.7;
+  petalLineWidth = "3px";
+  petalCircleRadius = 2;
+  petalCircleOpacity = 0.8;
+
+};
+
 
 @Component({
   selector: 'bd2-ngx-polar-plot',
@@ -82,6 +115,9 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
   @Input()
   labels: string[] = [];
 
+  @Input()
+  lookAndFeel = new LookAndFeel();
+
   @Output()
   colors = new EventEmitter<string[]>()
 
@@ -90,45 +126,16 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
   private polarUtil: PolarDomainUtil;
   private d3Svg: Selection<SVGSVGElement, any, null, undefined>;
 
-  private mainPane: Selection<SVGGElement, any, null, undefined>;
-  private axisGrid: Selection<SVGGElement, any, null, undefined>;
-  private petalsWrapper: Selection<SVGGElement, any, null, undefined>;
-  private dotsWrapper: Selection<SVGGElement, any, null, undefined>;
-  private individualDotsInsetWrapper: Selection<SVGGElement, any, null, undefined>;
-  private tooltip: Selection<SVGGElement, any, null, undefined>;
 
-  private radius: number;
   private _domain: number[];
   private showAllIndividuals = false;
   private showSelectedIndividuals = false;
 
-  //private dataPallete: string[];
   private individualPolarData: PolarPoint[][];
 
   private graphicContext = new GraphicContext();
 
-  private lookAndFeel = {
-    baseTransitionsTime: 400,
 
-    gridColor: "#CDCDCD",
-    axisColor: "white",
-    axisWidth: "2px",
-
-    //done by css
-    //axisFontSize: "10px",
-    //tooltipFontSize: "11px",
-
-    dotsCircleRadius: 4,
-    dotsCircleStrokeWidth: '1px',
-    dotsCircleFillOpacity: 0.5,
-
-    petalAreaOpacity: 0.35,
-    petalAreaOpacityActive: 0.7,
-    petalLineWidth: 3 + "px",
-    petalCircleRadius: 2,
-    petalCircleOpacity: 0.8,
-
-  };
 
 
   constructor(private ngZone: NgZone, private changeDetectorRef: ChangeDetectorRef, element: ElementRef) {
@@ -184,7 +191,7 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
   }
 
 
-  initializeSvg() {
+  initializeSvg(): GraphicContext {
 
     let pWidth = 500;
     let pHeight = 500;
@@ -196,18 +203,19 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
     this.d3Svg.attr('width', '100%')
       .attr('viewBox', '0 0 ' + pWidth + ' ' + pHeight);
 
-    this.mainPane = this.d3Svg.append<SVGGElement>('g')
+    let context = new GraphicContext();
+    context.mainPane = this.d3Svg.append<SVGGElement>('g')
       .attr('transform', 'translate(' + (pWidth / 2) + ',' + (pHeight / 2) + ')'); //moves 0,0 of the pain to the middle of the graphics
 
-    this.radius = Math.min(pWidth, pHeight) / 2 - 25;
-
+    context.radius = Math.min(pWidth, pHeight) / 2 - 25;
+    return context;
   }
 
-  prepareTooltip(pane: Selection<SVGGElement, any, null, undefined>, radius: number): Selection<SVGGElement, any, null, undefined> {
+  prepareTooltip(context: GraphicContext): GraphicContext {
 
-    if (!this.tooltip) {
+    if (!context.tooltip) {
       //Set up the small tooltip for when you hover over a circle
-      this.tooltip = <any>pane.append("text")
+      context.tooltip = <any>context.mainPane.append("text")
         .attr("class", "tooltip")
         .attr("text-anchor", "middle")
         .attr("dy", "0.35em")
@@ -216,12 +224,12 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
 
 
     }
-    return this.tooltip;
+    return context;
   }
 
   showTooltip(p: PetalNode, radius: number) {
 
-    this.tooltip
+    this.graphicContext.tooltip
       .attr('x', (radius + 15) * p.polarCoordinates[0])
       .attr('y', (radius + 15) * p.polarCoordinates[1])
       .text(p.roundedPeak)
@@ -230,7 +238,7 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
   }
 
   hideTooltip() {
-    this.tooltip
+    this.graphicContext.tooltip
       .transition().duration(this.lookAndFeel.baseTransitionsTime / 2)
       .style("opacity", 0);
   }
@@ -240,31 +248,29 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
   updatePlot() {
 
     if (!this.d3Svg) {
-      this.initializeSvg();
+      this.graphicContext = this.initializeSvg();
 
-      this.plotAxisGrid(this.mainPane, this.radius);
+      this.graphicContext = this.plotAxisGrid(this.graphicContext);
     }
 
 
     //the grid is plotted only once, only the lables are updated
-    this.updateAxisLabels(this._domain, this.axisGrid);
+    this.updateAxisLabels(this._domain, this.graphicContext.axisGrid);
 
     this.graphicContext = this.updatePalette(this.data,this.palette,this.graphicContext);
-    //this.dataPallete = this.graphicContext.palette;
 
     let petalNodes = this.polarUtil.dataToPetals(this.data, this._domain, this.scaleRadius, this.scaleWidth, this.errors);
     this.colorPetals(petalNodes, this.graphicContext.palette);
 
-
     this.individualPolarData = this.prepareIndividualPolarData(this.data, this._domain, this.graphicContext.palette);
 
-    this.plotDataPetals(petalNodes, this.scaleRadius, this.scaleWidth, this.mainPane, this.radius);
+    this.graphicContext = this.plotDataPetals(petalNodes, this.scaleRadius, this.scaleWidth, this.graphicContext);
 
-    this.plotAllDataDots(this.individualPolarData, this.showAllIndividuals, this.mainPane, this.radius);
+    this.graphicContext = this.plotAllDataDots(this.individualPolarData, this.showAllIndividuals, this.graphicContext);
 
-    this.prepareIndividualDataInset(this.mainPane, this.radius);
+    this.graphicContext = this.prepareIndividualDataInset(this.graphicContext);
 
-    this.prepareTooltip(this.mainPane, this.radius);
+    this.graphicContext = this.prepareTooltip(this.graphicContext);
 
   }
 
@@ -285,16 +291,17 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
 
   plotDataPetals(petalNodes: PetalNode[],
                  scaleRadius: boolean, scaleWidth: boolean,
-                 mainPane: Selection<SVGGElement, any, null, undefined>, radius: number) {
+                 context: GraphicContext): GraphicContext {
 
     const transitionsTime = this.lookAndFeel.baseTransitionsTime;
     let d3 = this.d3;
+    let radius = context.radius;
 
-    if (!this.petalsWrapper) {
-      this.petalsWrapper = mainPane.append<SVGGElement>("g").attr("class", "petalsWrapper");
+    if (!context.petalsWrapper) {
+      context.petalsWrapper = context.mainPane.append<SVGGElement>("g").attr("class", "petalsWrapper");
     }
 
-    let petalsWrapper = this.petalsWrapper;
+    let petalsWrapper = context.petalsWrapper;
 
     let petalLine = (p: PetalNode) => {
 
@@ -407,6 +414,7 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
 
     });
 
+    return context;
   }
 
 
@@ -419,30 +427,31 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
     }));
   }
 
-  prepareIndividualDataInset(mainPane: Selection<SVGGElement, any, null, undefined>, radius: number) {
+  prepareIndividualDataInset(context: GraphicContext): GraphicContext {
 
-    if (!this.individualDotsInsetWrapper) {
-      this.individualDotsInsetWrapper = mainPane.append<SVGGElement>("g").attr("class", "dotsInset");
+    if (!context.individualDotsInsetWrapper) {
+      context.individualDotsInsetWrapper = context.mainPane.append<SVGGElement>("g").attr("class", "dotsInset");
     }
 
     //the actual plotting happens in showIndividuals as it is data depended
 
     //we always hide it with new data first;
     this.hideIndividualDataInset();
+    return context;
   }
 
   hideIndividualDataInset() {
-    if (!this.individualDotsInsetWrapper) {
+    if (!this.graphicContext.individualDotsInsetWrapper) {
       return;
     }
 
-    this.individualDotsInsetWrapper
+    this.graphicContext.individualDotsInsetWrapper
       .style('opacity', 0.0);
   }
 
   showIndividualDataInset(p: PetalNode, ix: number, radius: number) {
 
-    if (!this.individualDotsInsetWrapper || !this.individualPolarData || !this.showSelectedIndividuals) {
+    if (!this.graphicContext.individualDotsInsetWrapper || !this.individualPolarData || !this.showSelectedIndividuals) {
       return;
     }
 
@@ -456,7 +465,7 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
 
 
 
-    let dots = this.individualDotsInsetWrapper.selectAll(".dotsCircle")
+    let dots = this.graphicContext.individualDotsInsetWrapper.selectAll(".dotsCircle")
       .data(individuals);
 
     //existing dots
@@ -494,29 +503,29 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
     dots.exit()
       .remove();
 
-    this.individualDotsInsetWrapper
+    this.graphicContext.individualDotsInsetWrapper
       .style('opacity', 1);
   }
 
 
   plotAllDataDots(dotsData: PolarPoint[][], showDots: boolean,
-                  mainPane: Selection<SVGGElement, any, null, undefined>, radius: number) {
+                  context: GraphicContext): GraphicContext {
 
 
     const transitionsTime = this.lookAndFeel.baseTransitionsTime;
     let d3 = this.d3;
+    let radius = context.radius;
 
-
-    if (!this.dotsWrapper) {
-      this.dotsWrapper = mainPane.append<SVGGElement>("g").attr("class", "dotsWrapper");
+    if (!context.dotsWrapper) {
+      context.dotsWrapper = context.mainPane.append<SVGGElement>("g").attr("class", "dotsWrapper");
     }
-    let dotsWrapper = this.dotsWrapper;
+    let dotsWrapper = context.dotsWrapper;
 
     if (!showDots) {
-      this.dotsWrapper.style('opacity', 0.0);
-      return;
+      context.dotsWrapper.style('opacity', 0.0);
+      return context;
     } else {
-      this.dotsWrapper.style('opacity', 1);
+      context.dotsWrapper.style('opacity', 1);
     }
 
     let instance = this;
@@ -583,16 +592,19 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
         .remove();
 
     });
+
+    return context;
   }
 
-  plotAxisGrid(pane: Selection<SVGGElement, any, null, undefined>, radius: number): Selection<SVGGElement, any, null, undefined> {
+  plotAxisGrid(context: GraphicContext): GraphicContext {
 
 
-    if (this.axisGrid) {
-      return this.axisGrid; //we only plot grid once
+    if (context.axisGrid) {
+      return context; //this.axisGrid; //we only plot grid once
     }
 
-    let axisGrid = this.axisGrid = pane.append<SVGGElement>("g").attr("class", "axisWrapper");
+    let radius = context.radius;
+    let axisGrid = context.axisGrid = context.mainPane.append<SVGGElement>("g").attr("class", "axisWrapper");
 
 
     axisGrid.selectAll(".levels")
@@ -647,7 +659,7 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
         return d[2];
       });
 
-    return axisGrid;
+    return context;
   }
 
   updateAxisLabels(domain: number[], axisGrid: Selection<SVGGElement, any, null, undefined>) {
