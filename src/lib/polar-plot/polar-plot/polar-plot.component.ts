@@ -77,7 +77,7 @@ export class LookAndFeel {
   styles: [
     `
       :host /deep/ .axis .legend  {
-        font-size: 12px;
+        font-size: 13px;
       }
 
       :host /deep/ .tooltip  {
