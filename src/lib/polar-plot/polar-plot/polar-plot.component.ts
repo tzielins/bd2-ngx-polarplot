@@ -38,6 +38,8 @@ export class GraphicContext {
   dotsWrapper: Selection<SVGGElement, any, null, undefined>;
   individualDotsInsetWrapper: Selection<SVGGElement, any, null, undefined>;
   tooltip: Selection<SVGGElement, any, null, undefined>;
+  tooltipText: Selection<SVGGElement, any, null, undefined>;
+  tooltipBox: Selection<SVGGElement, any, null, undefined>;
 
   radius: number;
 }
@@ -75,11 +77,11 @@ export class LookAndFeel {
   styles: [
     `
       :host /deep/ .axis .legend  {
-        font-size: 10px;
+        font-size: 12px;
       }
 
       :host /deep/ .tooltip  {
-        font-size: 11px;
+        font-size: 14px;
       }
 
     `
@@ -207,7 +209,7 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
     context.mainPane = this.d3Svg.append<SVGGElement>('g')
       .attr('transform', 'translate(' + (pWidth / 2) + ',' + (pHeight / 2) + ')'); //moves 0,0 of the pain to the middle of the graphics
 
-    context.radius = Math.min(pWidth, pHeight) / 2 - 25;
+    context.radius = Math.min(pWidth, pHeight) / 2 - 30;
     return context;
   }
 
@@ -215,32 +217,62 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
 
     if (!context.tooltip) {
       //Set up the small tooltip for when you hover over a circle
-      context.tooltip = <any>context.mainPane.append("text")
+      context.tooltip = <any>context.mainPane.append<SVGGElement>('g')
+            .classed("tooltipWrapper", true);
+
+      context.tooltipBox = context.tooltip.append<SVGGElement>("rect")
+            .style("fill", "white")
+            .style("fill-opacity", 0.8)
+            .style("stroke", "grey")
+          //.style("visibility", "hidden");
+          ;
+
+
+      context.tooltipText = <any>context.tooltip.append("text")
         .attr("class", "tooltip")
         .attr("text-anchor", "middle")
         .attr("dy", "0.35em")
         //.style("font-size", this.lookAndFeel.tooltipFontSize) //"11px")
-        .style("opacity", 0);
+        .style("opacity", 1)
+        ;
 
-
+        context.tooltip
+          .style("visibility", "hidden");
     }
     return context;
   }
 
   showTooltip(p: PetalNode, radius: number) {
 
-    this.graphicContext.tooltip
+
+
+    this.graphicContext.tooltipText
       .attr('x', (radius + 15) * p.polarCoordinates[0])
       .attr('y', (radius + 15) * p.polarCoordinates[1])
       .text(p.roundedPeak)
-      .transition().duration(this.lookAndFeel.baseTransitionsTime / 2)
-      .style('opacity', 1);
+      //.transition().duration(this.lookAndFeel.baseTransitionsTime / 2)
+      //.style('opacity', 1);
+      ;
+
+      let bbox = this.graphicContext.tooltipText.node().getBBox();
+
+      this.graphicContext.tooltipBox
+        .attr("x", bbox.x - 3)
+        .attr("y", bbox.y - 2)
+        .attr("width", bbox.width + 6)
+        .attr("height", bbox.height + 4);
+
+      this.graphicContext.tooltip
+        .style("visibility", "visible");
   }
 
   hideTooltip() {
-    this.graphicContext.tooltip
-      .transition().duration(this.lookAndFeel.baseTransitionsTime / 2)
-      .style("opacity", 0);
+    //this.graphicContext.tooltip
+      //.transition().duration(this.lookAndFeel.baseTransitionsTime / 2)
+      //.style("opacity", 0);
+
+      this.graphicContext.tooltip
+        .style("visibility", "hidden");
   }
 
 
@@ -265,6 +297,7 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
     petalNodes = petalNodes.filter( n => !isNaN(n.peak));
 
     this.individualPolarData = this.prepareIndividualPolarData(this.data, this._domain, this.graphicContext.palette);
+    this.individualPolarData = this.individualPolarData.filter( d => d.length !== 0);
 
     this.graphicContext = this.plotDataPetals(petalNodes, this.scaleRadius, this.scaleWidth, this.graphicContext);
 
