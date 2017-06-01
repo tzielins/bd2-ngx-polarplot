@@ -42,6 +42,7 @@ toggleHidden() {
     let rows: number[][] = [];
     rows.push([-23.4, 1, 25.2, 48.7, 73.1]);
     rows.push([22.5, 21.5, 20.6]);
+    rows.push([]);
     for (let i = 0; i < series; i++) {
 
       let len = Math.floor((Math.random() * 5) + 1);

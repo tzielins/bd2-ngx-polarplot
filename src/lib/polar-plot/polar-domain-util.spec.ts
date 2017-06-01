@@ -24,6 +24,8 @@ describe('Polar domain util', () => {
       expect(util.dataToPetals([], domain)).toEqual([]);
     });
 
+
+
     it('computes the petals', () => {
 
       let data = [

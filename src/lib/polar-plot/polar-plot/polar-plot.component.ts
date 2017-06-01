@@ -261,6 +261,8 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
 
     let petalNodes = this.polarUtil.dataToPetals(this.data, this._domain, this.scaleRadius, this.scaleWidth, this.errors);
     this.colorPetals(petalNodes, this.graphicContext.palette);
+    //remove empty data
+    petalNodes = petalNodes.filter( n => !isNaN(n.peak));
 
     this.individualPolarData = this.prepareIndividualPolarData(this.data, this._domain, this.graphicContext.palette);
 
