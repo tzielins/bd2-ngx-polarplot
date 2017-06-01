@@ -60,7 +60,7 @@ export class LookAndFeel {
   petalAreaOpacity = 0.35;
   petalAreaOpacityActive = 0.7;
   petalLineWidth = "3px";
-  petalCircleRadius = 2;
+  petalCircleRadius = 4;
   petalCircleOpacity = 0.8;
 
 };
@@ -327,7 +327,11 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
       petals
         .select(".petalsArea")
         .transition().duration(transitionsTime)
-        .attr("d", <any>petalLine);
+        .attr("d", <any>petalLine)
+        .on('interrupt', function(d,ix) {
+          d3.select(this).attr("d", <any>petalLine);
+        })
+        ;
 
       petals
         .select(".petalsLine")

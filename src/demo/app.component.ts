@@ -11,6 +11,7 @@ export class AppComponent {
   data: number[][];
   domain = [0, 24];
   indiv = "selected";
+  hidden = false;
 
   show = 'selected';
   i = 0;
@@ -26,6 +27,9 @@ export class AppComponent {
 
   }
 
+toggleHidden() {
+  this.hidden = !this.hidden;
+}
 
   value() {
     console.log("V called " + this.i++);

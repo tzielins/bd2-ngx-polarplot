@@ -39,7 +39,7 @@ export class AppModule { }
 2. Place the component in your template:
 
 ```
-<bd2-ngx-polar-plot 
+<bd2-ngx-polar-plot
   [data]="data" [domain]="domain" [showIndividuals]="all"
   [scaleRadius]="true" >
 </bd2-ngx-polar-plot>
@@ -72,6 +72,9 @@ data points are rendered only when the corresponding petal is hoovered over. The
 
 - optional `errors: number[]`, optional, errors values for each series, if missing the std. deviation of the inuput series is used for scaling width or radius
 
+- optional palette: string[], optional, collors to be used with the data
+- optional lookAndFeel, some rendering parameters, check the code for options
+
 
 ## The angular demo project
 
@@ -86,7 +89,7 @@ angular demo page at `src/demo`. It is a CLI project so:
 ## Credits
 
 Integration with D3 is based on the code from [d3-ng2-service](https://github.com/tomwanzek/d3-ng2-service)
-by Tom Wanzek. 
+by Tom Wanzek.
 The d3-ng2-service was actually used during development but then removed to reduce the dependencies and bundle size.
 
 The axis grid is based on the radar plot implementation by Nadieh Bremer: [radar chart](https://gist.github.com/nbremer/21746a9668ffdf6d8242), [radar chart redesigned](https://www.visualcinnamon.com/2015/10/different-look-d3-radar-chart.html)
@@ -95,6 +98,3 @@ The examples from Tom Wanzek [https://tomwanzek.github.io/d3-ng2-demo/] were als
 
 Performance optimization was achieved by using tricks described by Pascal Precht in articles about using:
 [ngZone](https://blog.thoughtram.io/angular/2017/02/21/using-zones-in-angular-for-better-performance.html) [ChangeDetectionStrategy](https://blog.thoughtram.io/angular/2017/02/02/making-your-angular-app-fast.html).
-
-
-
