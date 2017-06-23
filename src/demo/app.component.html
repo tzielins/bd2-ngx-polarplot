@@ -55,13 +55,24 @@
           {{scaleWidth ? 'On' : 'Off'}}</a>
         </div>
       </div>
+      <div class="form-group">
+        <label>Labels:</label>
+        <ul class="list-unstyled" style="margin: 1em;">
+          <li *ngFor="let row of labels">[{{row}}],</li>
+        </ul>
+      </div>
+
+      <div class="form-group">
+        <label>Toogle labels:</label> <a class="btn btn-primary btn-sm" (click)="labelsOn = !labelsOn">
+        {{labelsOn ? 'On' : 'Off'}}</a>
+      </div>
     </div>
 
     <div class="col-sm-6">
 
       <bd2-ngx-polar-plot [data]="data" [domain]="domain" [showIndividuals]="indiv"
                           [scaleRadius]="scaleRadius" [scaleWidth]="scaleWidth"
-                          [hidden]="hidden">
+                          [hidden]="hidden" [labels]="labels" [labelsOn]="labelsOn">
       </bd2-ngx-polar-plot>
 
     </div>

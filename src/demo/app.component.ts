@@ -9,6 +9,8 @@ export class AppComponent {
   title = 'app works!';
 
   data: number[][];
+  labels: string[] = [];
+
   domain = [0, 24];
   indiv = "selected";
   hidden = false;
@@ -16,6 +18,7 @@ export class AppComponent {
   show = 'selected';
   i = 0;
 
+  labelsOn = true;
   scaleRadius = true;
   scaleWidth = false;
 
@@ -27,9 +30,9 @@ export class AppComponent {
 
   }
 
-toggleHidden() {
-  this.hidden = !this.hidden;
-}
+  toggleHidden() {
+    this.hidden = !this.hidden;
+  }
 
   value() {
     console.log("V called " + this.i++);
@@ -57,6 +60,22 @@ toggleHidden() {
       }
       rows.push(row);
     }
+
+
+    let LET = "ABCDEFGHIJKLMN abcdef";
+    let labels = rows.map((v, ix) => {
+
+      let s = Math.random() * 30 + 3;
+      let label = (ix + 1) + '. '; //
+      for (let i = 0; i < s; i++) {
+        label += LET[Math.round(Math.random() * (LET.length - 1))];
+      }
+      //label += " " + ;
+
+      return label;
+    });
+
+    this.labels = labels;
     this.data = rows;
     return rows;
   }

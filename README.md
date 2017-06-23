@@ -72,8 +72,13 @@ data points are rendered only when the corresponding petal is hoovered over. The
 
 - optional `errors: number[]`, optional, errors values for each series, if missing the std. deviation of the inuput series is used for scaling width or radius
 
-- optional palette: string[], optional, collors to be used with the data
-- optional lookAndFeel, some rendering parameters, check the code for options
+- optional `palette: string[]`, optional, collors to be used with the data
+
+- optional `labels: string[]`, labels of the data, will be rendered in the center on hover over the petal
+
+- optional `labelsOn: boolean`, if true the label on hover works otherwise disabled
+
+- optional `lookAndFeel`, some rendering parameters, check the code for options
 
 
 ## The angular demo project

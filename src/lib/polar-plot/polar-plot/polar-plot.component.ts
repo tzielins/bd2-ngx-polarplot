@@ -20,7 +20,6 @@ import {PetalNode, PolarPoint} from "../polar-plot.dom";
 import {BD2ColorPalette} from "../color-palette";
 
 
-
 /**
 
 
@@ -40,6 +39,10 @@ export class GraphicContext {
   tooltip: Selection<SVGGElement, any, null, undefined>;
   tooltipText: Selection<SVGGElement, any, null, undefined>;
   tooltipBox: Selection<SVGGElement, any, null, undefined>;
+
+  legendtip: Selection<SVGGElement, any, null, undefined>;
+  legendtipText: Selection<SVGGElement, any, null, undefined>;
+  legendtipBox: Selection<SVGGElement, any, null, undefined>;
 
   radius: number;
 }
@@ -65,7 +68,8 @@ export class LookAndFeel {
   petalCircleRadius = 4;
   petalCircleOpacity = 0.8;
 
-};
+}
+;
 
 
 @Component({
@@ -75,15 +79,18 @@ export class LookAndFeel {
     <div class="polarplot"></div>
   `,
   styles: [
-    `
-      :host /deep/ .axis .legend  {
+      `
+      :host /deep/ .axis .legend {
         font-size: 13px;
       }
 
-      :host /deep/ .tooltip  {
+      :host /deep/ .tooltip {
         font-size: 14px;
       }
 
+      :host /deep/ .legendtip {
+        font-size: 18px;
+      }
     `
   ]
 })
@@ -118,10 +125,14 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
   labels: string[] = [];
 
   @Input()
+  labelsOn = true;
+
+
+  @Input()
   lookAndFeel = new LookAndFeel();
 
   @Output()
-  colors = new EventEmitter<string[]>()
+  colors = new EventEmitter<string[]>();
 
   private d3: D3;
   private parentNativeElement: any;
@@ -136,8 +147,6 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
   private individualPolarData: PolarPoint[][];
 
   private graphicContext = new GraphicContext();
-
-
 
 
   constructor(private ngZone: NgZone, private changeDetectorRef: ChangeDetectorRef, element: ElementRef) {
@@ -213,19 +222,80 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
     return context;
   }
 
+  prepareLegendtip(context: GraphicContext): GraphicContext {
+
+    if (!context.legendtip) {
+      //Set up the small tooltip in the centre for when you hover over a circle
+      context.legendtip = <any>context.mainPane.append<SVGGElement>('g')
+        .classed("legendtipWrapper", true);
+
+      context.legendtipBox = context.legendtip.append<SVGGElement>("rect")
+        .style("fill", "white")
+        .style("fill-opacity", 0.9)
+        .style("stroke", "grey")
+      ;
+
+
+      context.legendtipText = <any>context.legendtip.append("text")
+        .attr("class", "legendtip")
+        .attr("text-anchor", "middle")
+        //.attr("dy", "0.35em")
+        //.style("font-size", this.lookAndFeel.tooltipFontSize) //"11px")
+        .style("opacity", 1)
+      ;
+
+      context.legendtip
+        .style("visibility", "hidden");
+    }
+    return context;
+  }
+
+  showLegendtip(p: PetalNode, radius: number) {
+
+    if (!this.labelsOn) {
+      return;
+    }
+
+    this.graphicContext.legendtipText
+      .attr('x', 0)
+      .attr('y', 0)
+      .text(p.label)
+    //.transition().duration(this.lookAndFeel.baseTransitionsTime / 2)
+    //.style('opacity', 1);
+    ;
+
+    let bbox = this.graphicContext.legendtipText.node().getBBox();
+
+    this.graphicContext.legendtipBox
+      .attr("x", bbox.x - 3)
+      .attr("y", bbox.y - 2)
+      .attr("width", bbox.width + 6)
+      .attr("height", bbox.height + 4);
+
+    this.graphicContext.legendtip
+      .style("visibility", "visible");
+  }
+
+  hideLegendtip() {
+
+    this.graphicContext.legendtip
+      .style("visibility", "hidden");
+  }
+
+
   prepareTooltip(context: GraphicContext): GraphicContext {
 
     if (!context.tooltip) {
       //Set up the small tooltip for when you hover over a circle
       context.tooltip = <any>context.mainPane.append<SVGGElement>('g')
-            .classed("tooltipWrapper", true);
+        .classed("tooltipWrapper", true);
 
       context.tooltipBox = context.tooltip.append<SVGGElement>("rect")
-            .style("fill", "white")
-            .style("fill-opacity", 0.8)
-            .style("stroke", "grey")
-          //.style("visibility", "hidden");
-          ;
+        .style("fill", "white")
+        .style("fill-opacity", 0.8)
+        .style("stroke", "grey")
+      //.style("visibility", "hidden");
+      ;
 
 
       context.tooltipText = <any>context.tooltip.append("text")
@@ -234,10 +304,10 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
         .attr("dy", "0.35em")
         //.style("font-size", this.lookAndFeel.tooltipFontSize) //"11px")
         .style("opacity", 1)
-        ;
+      ;
 
-        context.tooltip
-          .style("visibility", "hidden");
+      context.tooltip
+        .style("visibility", "hidden");
     }
     return context;
   }
@@ -245,36 +315,34 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
   showTooltip(p: PetalNode, radius: number) {
 
 
-
     this.graphicContext.tooltipText
       .attr('x', (radius + 15) * p.polarCoordinates[0])
       .attr('y', (radius + 15) * p.polarCoordinates[1])
       .text(p.roundedPeak)
-      //.transition().duration(this.lookAndFeel.baseTransitionsTime / 2)
-      //.style('opacity', 1);
-      ;
+    //.transition().duration(this.lookAndFeel.baseTransitionsTime / 2)
+    //.style('opacity', 1);
+    ;
 
-      let bbox = this.graphicContext.tooltipText.node().getBBox();
+    let bbox = this.graphicContext.tooltipText.node().getBBox();
 
-      this.graphicContext.tooltipBox
-        .attr("x", bbox.x - 3)
-        .attr("y", bbox.y - 2)
-        .attr("width", bbox.width + 6)
-        .attr("height", bbox.height + 4);
+    this.graphicContext.tooltipBox
+      .attr("x", bbox.x - 3)
+      .attr("y", bbox.y - 2)
+      .attr("width", bbox.width + 6)
+      .attr("height", bbox.height + 4);
 
-      this.graphicContext.tooltip
-        .style("visibility", "visible");
+    this.graphicContext.tooltip
+      .style("visibility", "visible");
   }
 
   hideTooltip() {
     //this.graphicContext.tooltip
-      //.transition().duration(this.lookAndFeel.baseTransitionsTime / 2)
-      //.style("opacity", 0);
+    //.transition().duration(this.lookAndFeel.baseTransitionsTime / 2)
+    //.style("opacity", 0);
 
-      this.graphicContext.tooltip
-        .style("visibility", "hidden");
+    this.graphicContext.tooltip
+      .style("visibility", "hidden");
   }
-
 
 
   updatePlot() {
@@ -289,15 +357,13 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
     //the grid is plotted only once, only the lables are updated
     this.updateAxisLabels(this._domain, this.graphicContext.axisGrid);
 
-    this.graphicContext = this.updatePalette(this.data,this.palette,this.graphicContext);
+    this.graphicContext = this.updatePalette(this.data, this.palette, this.graphicContext);
 
-    let petalNodes = this.polarUtil.dataToPetals(this.data, this._domain, this.scaleRadius, this.scaleWidth, this.errors);
-    this.colorPetals(petalNodes, this.graphicContext.palette);
-    //remove empty data
-    petalNodes = petalNodes.filter( n => !isNaN(n.peak));
+    let petalNodes = this.prepareDataModel(this.data, this._domain, this.scaleRadius, this.scaleWidth, this.errors,
+      this.labels, this.graphicContext.palette);
 
     this.individualPolarData = this.prepareIndividualPolarData(this.data, this._domain, this.graphicContext.palette);
-    this.individualPolarData = this.individualPolarData.filter( d => d.length !== 0);
+    this.individualPolarData = this.individualPolarData.filter(d => d.length !== 0);
 
     this.graphicContext = this.plotDataPetals(petalNodes, this.scaleRadius, this.scaleWidth, this.graphicContext);
 
@@ -306,7 +372,21 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
     this.graphicContext = this.prepareIndividualDataInset(this.graphicContext);
 
     this.graphicContext = this.prepareTooltip(this.graphicContext);
+    this.graphicContext = this.prepareLegendtip(this.graphicContext);
 
+  }
+
+  prepareDataModel(dataGroups: number[][], domain: number[],
+                   scaleRadius: boolean, scaleWidth: boolean, errors: number[],
+                   labels: string[], palette: string[]): PetalNode[] {
+
+    let petalNodes = this.polarUtil.dataToPetals(this.data, this._domain, this.scaleRadius, this.scaleWidth, this.errors);
+
+    this.labelPetals(petalNodes, labels);
+    this.colorPetals(petalNodes, palette);
+    //remove empty data
+    petalNodes = petalNodes.filter(n => !isNaN(n.peak));
+    return petalNodes;
   }
 
   updatePalette(data: any[], palette: string[], context: GraphicContext): GraphicContext {
@@ -320,8 +400,16 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
     return context;
   }
 
+  labelPetals(petals: PetalNode[], labels: string[]) {
+    if (!labels) {
+      labels = [];
+    }
+
+    petals.forEach((n, ix) => n.label = labels[ix] ? labels[ix] : "" + (ix + 1));
+  }
+
   colorPetals(petals: PetalNode[], palette: string[]) {
-    petals.forEach( (b,ix) => b.color = palette[ix]);
+    petals.forEach((b, ix) => b.color = palette[ix]);
   }
 
   plotDataPetals(petalNodes: PetalNode[],
@@ -363,10 +451,10 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
         .select(".petalsArea")
         .transition().duration(transitionsTime)
         .attr("d", <any>petalLine)
-        .on('interrupt', function(d,ix) {
+        .on('interrupt', function (d, ix) {
           d3.select(this).attr("d", <any>petalLine);
         })
-        ;
+      ;
 
       petals
         .select(".petalsLine")
@@ -402,6 +490,7 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
             .style("fill-opacity", instance.lookAndFeel.petalAreaOpacityActive);
 
           instance.showTooltip(d, radius);
+          instance.showLegendtip(d, radius);
           instance.showIndividualDataInset(d, i, radius);
 
         })
@@ -412,6 +501,7 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
             .style("fill-opacity", instance.lookAndFeel.petalAreaOpacity);
 
           instance.hideTooltip();
+          instance.hideLegendtip();
           instance.hideIndividualDataInset();
 
         })
@@ -503,7 +593,6 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
     let individuals = this.individualPolarData[ix];
 
 
-
     let dots = this.graphicContext.individualDotsInsetWrapper.selectAll(".dotsCircle")
       .data(individuals);
 
@@ -519,7 +608,7 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
       .style('opacity', 1)
       .attr("cx", d => radius * d.xy[0])
       .attr("cy", d => radius * d.xy[1]) // Math.sin(d * 2 * Math.PI / 24 - Math.PI / 2);
-      ;
+    ;
 
     //new dots
     dots.enter()
@@ -537,7 +626,7 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
       .style('opacity', 1)
       .attr("cx", d => radius * d.xy[0])
       .attr("cy", d => radius * d.xy[1]) // Math.sin(d * 2 * Math.PI / 24 - Math.PI / 2);
-      ;
+    ;
     //exit
     dots.exit()
       .remove();
@@ -584,7 +673,7 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
         .transition().duration(transitionsTime)
         .attr("cx", d => radius * d.xy[0])
         .attr("cy", d => radius * d.xy[1]) // Math.sin(d * 2 * Math.PI / 24 - Math.PI / 2);
-        ;
+      ;
 
       dotsInExisting.enter()
         .append("circle")
