@@ -81,11 +81,11 @@ export class LookAndFeel {
   styles: [
       `
       :host /deep/ .axis .legend {
-        font-size: 13px;
+        font-size: 15px;
       }
 
       :host /deep/ .tooltip {
-        font-size: 14px;
+        font-size: 15px;
       }
 
       :host /deep/ .legendtip {
@@ -778,10 +778,10 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
       .attr("text-anchor", "middle")
       .attr("dy", "0.35em")
       .attr("x", function (d, i) {
-        return (radius + 10) * d[0]; //Math.cos(d * 2 * Math.PI / 24 - Math.PI / 2);
+        return (radius + 15) * d[0]; //Math.cos(d * 2 * Math.PI / 24 - Math.PI / 2);
       })
       .attr("y", function (d, i) {
-        return (radius + 10) * d[1]; //Math.sin(d * 2 * Math.PI / 24 - Math.PI / 2);
+        return (radius + 15) * d[1]; //Math.sin(d * 2 * Math.PI / 24 - Math.PI / 2);
       })
       .text(function (d, i) {
         return d[2];
@@ -796,7 +796,11 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
     let axis = axisGrid.selectAll(".axis");
     axis.select("text")
       .text(function (d, i) {
-        return SmartRounder.round(domain[0] + d[2] / 24 * range);
+        if (i === 0) {
+          return SmartRounder.round(domain[1]) + " / " + SmartRounder.round(domain[0]);
+        } else {
+          return SmartRounder.round(domain[0] + d[2] / 24 * range);
+        }
       });
 
   }
