@@ -11,8 +11,9 @@ export class PetalNode {
 
   label: string;
   color: string;
+  hidden: boolean;
 }
 
 export class PolarPoint {
-  constructor(public xy: number[], public color: string) {};
+  constructor(public xy: number[], public color: string, public hidden?: boolean) {};
 }

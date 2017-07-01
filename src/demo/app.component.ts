@@ -10,6 +10,7 @@ export class AppComponent {
 
   data: number[][];
   labels: string[] = [];
+  removed: number[] = [];
 
   domain = [0, 24];
   indiv = "selected";
@@ -28,6 +29,14 @@ export class AppComponent {
     this.generateData();
 
 
+  }
+
+  toggleRemoved() {
+    if (this.removed.length === 0) {
+      this.removed = [0,3];
+    } else {
+      this.removed = [];
+    }
   }
 
   toggleHidden() {

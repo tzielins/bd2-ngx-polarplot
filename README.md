@@ -80,6 +80,7 @@ data points are rendered only when the corresponding petal is hoovered over. The
 
 - optional `lookAndFeel`, some rendering parameters, check the code for options
 
+- optional `removed: number[]`, indexes of the data groups that should be removed from plot. The removed groups are being rendered just hidden so the labels, colors are preserved and bringing them back/removing does not triggers transitions in the not removed petals
 
 ## The angular demo project
 

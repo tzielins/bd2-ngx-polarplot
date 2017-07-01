@@ -34,7 +34,7 @@ describe('PolarPlotComponent', () => {
     let data = [[15, 16],[2,2],[3]];
     let domain = [0,24,24];
     let palette = BD2ColorPalette.palette(data.length);
-    let ans: PolarPoint[][] = component.prepareIndividualPolarData(data,domain,palette);
+    let ans: PolarPoint[][] = component.prepareIndividualPolarData(data,domain,[],palette);
     expect(ans).toBeTruthy();
     expect(ans.length).toBe(3);
     expect(ans[2].length).toBe(1);

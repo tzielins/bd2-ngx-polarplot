@@ -105,6 +105,9 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
   errors: number[];
 
   @Input()
+  removed: number[] = [];
+
+  @Input()
   scaleRadius = true;
 
   @Input()
@@ -360,9 +363,9 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
     this.graphicContext = this.updatePalette(this.data, this.palette, this.graphicContext);
 
     let petalNodes = this.prepareDataModel(this.data, this._domain, this.scaleRadius, this.scaleWidth, this.errors,
-      this.labels, this.graphicContext.palette);
+      this.labels, this.removed, this.graphicContext.palette);
 
-    this.individualPolarData = this.prepareIndividualPolarData(this.data, this._domain, this.graphicContext.palette);
+    this.individualPolarData = this.prepareIndividualPolarData(this.data, this._domain, this.removed, this.graphicContext.palette);
     this.individualPolarData = this.individualPolarData.filter(d => d.length !== 0);
 
     this.graphicContext = this.plotDataPetals(petalNodes, this.scaleRadius, this.scaleWidth, this.graphicContext);
@@ -378,12 +381,21 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
 
   prepareDataModel(dataGroups: number[][], domain: number[],
                    scaleRadius: boolean, scaleWidth: boolean, errors: number[],
-                   labels: string[], palette: string[]): PetalNode[] {
+                   labels: string[], removed: number[],
+                   palette: string[]): PetalNode[] {
 
     let petalNodes = this.polarUtil.dataToPetals(this.data, this._domain, this.scaleRadius, this.scaleWidth, this.errors);
 
     this.labelPetals(petalNodes, labels);
     this.colorPetals(petalNodes, palette);
+    //mark hidden
+    removed.forEach( ix => {
+      if (petalNodes[ix]) {
+        petalNodes[ix].hidden = true;
+      }
+    });
+    //petalNodes = petalNodes.filter(n => !n.hidden);
+
     //remove empty data
     petalNodes = petalNodes.filter(n => !isNaN(n.peak));
     return petalNodes;
@@ -543,17 +555,26 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
 
     });
 
+    let petals:Selection<SVGGElement, PetalNode, null, undefined> = <any>petalsWrapper.selectAll(".petal")
+      .style("visibility", (n:PetalNode) => n.hidden ? "hidden":"visible");
     return context;
   }
 
 
-  prepareIndividualPolarData(dataGroups: number[][], domain: number[], palette: string[]): PolarPoint[][] {
+  prepareIndividualPolarData(dataGroups: number[][], domain: number[],
+    removed: number[], palette: string[]): PolarPoint[][] {
     //append group index to the data so the colors can be generated for each data point (ix is for the parrent so it would
     //not be available
-    return dataGroups.map((g, ix) => g.map(a => {
+    let ind = dataGroups.map((g, ix) => g.map(a => {
       let v = new PolarPoint(this.polarUtil.calculatePolarCoordinate(a, domain), palette[ix]);
       return v;
     }));
+    removed.forEach (ix => {
+      if (ind[ix]) {
+        ind[ix].forEach(p => p.hidden = true);
+      }
+    })
+    return ind;
   }
 
   prepareIndividualDataInset(context: GraphicContext): GraphicContext {
@@ -677,8 +698,8 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
 
       dotsInExisting.enter()
         .append("circle")
-        .transition().duration(transitionsTime)
         .attr("class", "dotsCircle")
+        .transition().duration(transitionsTime)
         .attr("cx", d => radius * d.xy[0])
         .attr("cy", d => radius * d.xy[1]) // Math.sin(d * 2 * Math.PI / 24 - Math.PI / 2);
         .attr("r", this.lookAndFeel.dotsCircleRadius)
@@ -703,8 +724,8 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
 
       dotsInNewGroups.enter()
         .append("circle")
-        .transition().duration(transitionsTime)
         .attr("class", "dotsCircle")
+        .transition().duration(transitionsTime)
         .attr("cx", d => radius * d.xy[0])
         .attr("cy", d => radius * d.xy[1]) // Math.sin(d * 2 * Math.PI / 24 - Math.PI / 2);
         .attr("r", this.lookAndFeel.dotsCircleRadius)
@@ -720,6 +741,10 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
         .remove();
 
     });
+
+    let dotsGroup = dotsWrapper//.selectAll(".dotsGroup")
+        .selectAll(".dotsCircle")
+        .style("visibility", (n:PolarPoint) => n.hidden ? "hidden":"visible");
 
     return context;
   }
