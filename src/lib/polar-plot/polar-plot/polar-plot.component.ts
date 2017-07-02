@@ -248,7 +248,8 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
       ;
 
       context.legendtip
-        .style("visibility", "hidden");
+        //.style("visibility", "hidden");
+        .style("display", "none");
     }
     return context;
   }
@@ -276,13 +277,15 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
       .attr("height", bbox.height + 4);
 
     this.graphicContext.legendtip
-      .style("visibility", "visible");
+      //.style("visibility", "visible");
+      .style("display", null);
   }
 
   hideLegendtip() {
 
     this.graphicContext.legendtip
-      .style("visibility", "hidden");
+      //.style("visibility", "hidden");
+      .style("display", "none");
   }
 
 
@@ -310,7 +313,8 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
       ;
 
       context.tooltip
-        .style("visibility", "hidden");
+        //.style("visibility", "hidden");
+        .style("display", "none");
     }
     return context;
   }
@@ -335,7 +339,8 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
       .attr("height", bbox.height + 4);
 
     this.graphicContext.tooltip
-      .style("visibility", "visible");
+      //.style("visibility", "visible");
+      .style("display", null);
   }
 
   hideTooltip() {
@@ -344,7 +349,8 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
     //.style("opacity", 0);
 
     this.graphicContext.tooltip
-      .style("visibility", "hidden");
+      //.style("visibility", "hidden");
+      .style("display", "none");
   }
 
 
@@ -556,7 +562,8 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
     });
 
     let petals:Selection<SVGGElement, PetalNode, null, undefined> = <any>petalsWrapper.selectAll(".petal")
-      .style("visibility", (n:PetalNode) => n.hidden ? "hidden":"visible");
+      //.style("visibility", (n:PetalNode) => n.hidden ? "hidden":"visible");
+      .style("display", (n:PetalNode) => n.hidden ? "none":null);
     return context;
   }
 
@@ -744,7 +751,8 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
 
     let dotsGroup = dotsWrapper//.selectAll(".dotsGroup")
         .selectAll(".dotsCircle")
-        .style("visibility", (n:PolarPoint) => n.hidden ? "hidden":"visible");
+        //.style("visibility", (n:PolarPoint) => n.hidden ? "hidden":"visible");
+        .style("display", (n:PolarPoint) => n.hidden ? "none":null);
 
     return context;
   }

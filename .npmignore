@@ -39,6 +39,10 @@ testem.log
 # e2e
 /e2e
 
+# demo app
+/src/demo
+
+# test files
 /src/**/*.spec.ts
 
 # System Files
