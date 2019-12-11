@@ -36,17 +36,9 @@
           <a class="btn btn-primary btn-sm" (click)="toggleHidden()">toggle hidden</a> {{hidden}}
         </div>
 
-        <div class="form-group">
-          <label>Data:</label>
-          <ul class="list-unstyled" style="margin: 1em;">
-            <li *ngFor="let row of data">[{{row}}],</li>
-          </ul>
-        </div>
 
-        <div class="form-group">
-          <label>Domain:</label>
-          <span>[{{domain}}]</span>
-        </div>
+
+
 
         <div class="form-group">
           <label>Show individuals</label>
@@ -66,12 +58,7 @@
           {{scaleWidth ? 'On' : 'Off'}}</a>
         </div>
       </div>
-      <div class="form-group">
-        <label>Labels:</label>
-        <ul class="list-unstyled" style="margin: 1em;">
-          <li *ngFor="let row of labels">[{{row}}],</li>
-        </ul>
-      </div>
+
 
       <div class="form-group">
         <label>Toogle labels:</label> <a class="btn btn-primary btn-sm" (click)="labelsOn = !labelsOn">
@@ -90,6 +77,28 @@
       >
 
       </bd2-ngx-polar-plot>
+
+    </div>
+
+    <div class="col-sm-12">
+      <div class="form-group">
+        <label>Domain:</label>
+        <span>[{{domain}}]</span>
+      </div>
+
+      <div class="form-group">
+        <label>Data:</label>
+        <ul class="list-unstyled" style="margin: 1em;">
+          <li *ngFor="let row of data">[{{row}}],</li>
+        </ul>
+      </div>
+
+      <div class="form-group">
+        <label>Labels:</label>
+        <ul class="list-unstyled" style="margin: 1em;">
+          <li *ngFor="let row of labels">[{{row}}],</li>
+        </ul>
+      </div>
 
     </div>
 

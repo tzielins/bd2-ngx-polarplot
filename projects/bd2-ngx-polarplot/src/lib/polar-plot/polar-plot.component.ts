@@ -361,12 +361,12 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
 
   updatePalette(data: any[], palette: string[], context: GraphicContext): GraphicContext {
     if (!palette || palette.length === 0) {
-      palette = BD2ColorPalette.palette(data.length);
-    }
+      context.palette = BD2ColorPalette.palette(data.length);
+    } else {
+      context.palette = BD2ColorPalette.extendPalette(palette, data.length);
 
-    palette = BD2ColorPalette.extendPalette(palette, data.length);
-    context.palette = palette;
-    this.colors.next(palette.slice());
+    }
+    this.colors.next(context.palette.slice());
     return context;
   }
 
@@ -398,7 +398,7 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
 
     const petalLine = (p: PetalNode) => {
 
-      return d3.radialLine()
+      return d3.lineRadial()
         .radius(function(d) {
           return radius * d[0];
         })

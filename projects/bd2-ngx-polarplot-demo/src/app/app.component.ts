@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import {interval, Subscription} from 'rxjs';
+import {take} from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -47,8 +49,23 @@ export class AppComponent {
     return this.show;
   }
 
-  generateData(): number[][] {
-    const series = Math.floor((Math.random() * 4) + 1);
+  // for testing fast changing data
+  generateDelayedData() {
+    let s: Subscription;
+    s = interval(100).pipe(
+      take(3)
+    ).subscribe( v => this.generateDataInner(3, 15), err => {}, () => {
+      if (s) { s.unsubscribe(); }
+    });
+  }
+
+  generateData() {
+    // this.generateDataInner(2);
+    this.generateDelayedData();
+  }
+
+  generateDataInner(nrBase = 1, increase = 5): number[][] {
+    const series = Math.floor((Math.random() * increase) + nrBase);
 
     const rows: number[][] = [];
     rows.push([-23.4, 1, 25.2, 48.7, 73.1]);
