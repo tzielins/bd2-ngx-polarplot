@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import {PolarPlotComponent} from './polar-plot/polar-plot.component';
+import {PolarPlotComponent} from '../../../bd2-ngx-polarplot-demo/src/app/polar-plot/polar-plot.component';
 import {CommonModule} from '@angular/common';
 
 

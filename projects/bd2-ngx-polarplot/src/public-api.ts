@@ -4,4 +4,4 @@
 
 
 export * from './lib/bd2-ngx-polarplot.module';
-export * from './lib/polar-plot/polar-plot.component'
+export * from '../../bd2-ngx-polarplot-demo/src/app/polar-plot/polar-plot.component'

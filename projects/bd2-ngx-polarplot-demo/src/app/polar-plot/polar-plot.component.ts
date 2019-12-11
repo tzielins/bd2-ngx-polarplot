@@ -320,8 +320,10 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
 
     this.graphicContext = this.updatePalette(this.data, this.palette, this.graphicContext);
 
+
     const petalNodes = this.prepareDataModel(this.data, this._domain, this.scaleRadius, this.scaleWidth, this.errors,
       this.labels, this.removed, this.graphicContext.palette);
+
 
     this.individualPolarData = this.prepareIndividualPolarData(this.data, this._domain, this.removed, this.graphicContext.palette);
     this.individualPolarData = this.individualPolarData.filter(d => d.length !== 0);
@@ -413,23 +415,40 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
     // so that angular change detection is not triggered for mouseover/our events or transitions
     this.ngZone.runOutsideAngular(() => {
 
-
       const petals = petalsWrapper.selectAll('.petal')
         .data(petalNodes);
+
+
+      const petalAreaOpacity = this.lookAndFeel.petalAreaOpacity;
 
       petals
         .select('.petalsArea')
         .transition().duration(transitionsTime)
         .attr('d', petalLine as any)
+        .style('fill', d => d.color)
+        .style('fill-opacity', this.lookAndFeel.petalAreaOpacity)
         .on('interrupt', function(d, ix) {
-          d3.select(this).attr('d', petalLine as any);
+          d3.select(this)
+            .attr('d', petalLine as any)
+            .style('fill', _ => d.color)
+            .style('fill-opacity', petalAreaOpacity);
         })
       ;
 
       petals
         .select('.petalsLine')
         .transition().duration(transitionsTime)
-        .attr('d', petalLine as any);
+        .attr('d', petalLine as any)
+        .style('stroke', d => d.color)
+        .style('stroke-opacity', 1)
+        .style('stroke-width', this.lookAndFeel.petalLineWidth)
+        .on('interrupt', function(d, ix) {
+          d3.select(this)
+            .attr('d', petalLine as any)
+            .style('stroke', _ => d.color)
+            .style('stroke-opacity', 1);
+        })
+      ;
 
       petals
         .select('.petalsCircle')
@@ -439,7 +458,19 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
         })
         .attr('cy', function(d: PetalNode, i) {
           return radius * d.polarCoordinates[1]; // Math.sin(d * 2 * Math.PI / 24 - Math.PI / 2);
-        });
+        })
+        .style('fill', d => d.color)
+        .on('interrupt', function(d, ix) {
+          d3.select(this)
+            .attr('cx', function(_: PetalNode, i) {
+              return radius * d.polarCoordinates[0]; // Math.cos(d * 2 * Math.PI / 24 - Math.PI / 2);
+            })
+            .attr('cy', function(_: PetalNode, i) {
+              return radius * d.polarCoordinates[1]; // Math.sin(d * 2 * Math.PI / 24 - Math.PI / 2);
+            })
+            .style('fill', _ => d.color);
+        })
+      ;
 
       const newPetals = petals
         .enter()
@@ -507,15 +538,16 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
         .style('fill-opacity', this.lookAndFeel.petalCircleOpacity);
 
       petals.exit()
-        .transition().duration(transitionsTime / 2)
-        .style('opacity', 0.0)
+        //.transition().duration(transitionsTime / 2)
+        //.style('opacity', 0.0)
         .remove();
+
+      const petalsAll: Selection<SVGGElement, PetalNode, null, undefined> = petalsWrapper.selectAll('.petal')
+        // .style("visibility", (n:PetalNode) => n.hidden ? "hidden":"visible");
+        .style('display', (n: PetalNode) => n.hidden ? 'none' : null) as any;
 
     });
 
-    const petals: Selection<SVGGElement, PetalNode, null, undefined> = petalsWrapper.selectAll('.petal')
-    // .style("visibility", (n:PetalNode) => n.hidden ? "hidden":"visible");
-      .style('display', (n: PetalNode) => n.hidden ? 'none' : null) as any;
     return context;
   }
 
@@ -653,6 +685,8 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
         .transition().duration(transitionsTime)
         .attr('cx', d => radius * d.xy[0])
         .attr('cy', d => radius * d.xy[1]) // Math.sin(d * 2 * Math.PI / 24 - Math.PI / 2);
+        .style('stroke', d => d.color)
+        .style('fill', d => d.color)
       ;
 
       dotsInExisting.enter()

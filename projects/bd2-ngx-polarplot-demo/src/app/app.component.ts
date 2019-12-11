@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import {interval, Subscription} from 'rxjs';
 import {take} from 'rxjs/operators';
+import {BD2ColorPalette} from './polar-plot-utils/color-palette';
 
 @Component({
   selector: 'app-root',
@@ -24,6 +25,8 @@ export class AppComponent {
   labelsOn = true;
   scaleRadius = true;
   scaleWidth = false;
+
+  palette: string[];
 
   constructor() {
 
@@ -52,7 +55,7 @@ export class AppComponent {
   // for testing fast changing data
   generateDelayedData() {
     let s: Subscription;
-    s = interval(100).pipe(
+    s = interval(1000).pipe(
       take(3)
     ).subscribe( v => this.generateDataInner(3, 15), err => {}, () => {
       if (s) { s.unsubscribe(); }
@@ -60,8 +63,8 @@ export class AppComponent {
   }
 
   generateData() {
-    // this.generateDataInner(2);
-    this.generateDelayedData();
+    this.generateDataInner(2, 6);
+    // this.generateDelayedData();
   }
 
   generateDataInner(nrBase = 1, increase = 5): number[][] {
@@ -102,6 +105,8 @@ export class AppComponent {
 
     this.labels = labels;
     this.data = rows;
+
+    this.palette = Math.random() > 0.5 ? BD2ColorPalette.palette(10) : ['blue'];
     return rows;
   }
 
