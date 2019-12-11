@@ -1,7 +1,7 @@
 import { TestBed, async } from '@angular/core/testing';
 import { AppComponent } from './app.component';
 import { FormsModule } from '@angular/forms';
-import {PolarPlotModule} from 'bd2-ngx-polarplot';
+import { BD2NgxPolarplotModule} from 'bd2-ngx-polarplot';
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
@@ -9,7 +9,7 @@ describe('AppComponent', () => {
       declarations: [
         AppComponent
       ],
-      imports: [FormsModule, PolarPlotModule]
+      imports: [FormsModule, BD2NgxPolarplotModule ]
     }).compileComponents();
   }));
 

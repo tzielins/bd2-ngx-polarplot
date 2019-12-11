@@ -1,9 +1,9 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 
 import { AppComponent } from './app.component';
-import {PolarPlotModule} from 'bd2-ngx-polarplot';
+import {FormsModule} from '@angular/forms';
+import {BD2NgxPolarplotModule} from 'bd2-ngx-polarplot';
 
 @NgModule({
   declarations: [
@@ -12,7 +12,7 @@ import {PolarPlotModule} from 'bd2-ngx-polarplot';
   imports: [
     BrowserModule,
     FormsModule,
-    PolarPlotModule
+    BD2NgxPolarplotModule
   ],
   providers: [],
   bootstrap: [AppComponent]

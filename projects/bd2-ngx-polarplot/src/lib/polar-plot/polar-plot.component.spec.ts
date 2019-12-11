@@ -1,11 +1,10 @@
 
-import { async, fakeAsync, tick, ComponentFixture, TestBed} from '@angular/core/testing';
-import {By} from '@angular/platform-browser';
+import { async, ComponentFixture, TestBed} from '@angular/core/testing';
 
 import { PolarPlotComponent } from './polar-plot.component';
-import {PetalNode, PolarPoint} from '../polar-plot.dom';
-import {PolarDomainUtil} from '../polar-domain-util';
-import {BD2ColorPalette} from '../color-palette';
+import { PolarPoint} from '../polar-plot-utils/polar-plot.dom';
+import {PolarDomainUtil} from '../polar-plot-utils/polar-domain-util';
+import {BD2ColorPalette} from '../polar-plot-utils/color-palette';
 
 describe('PolarPlotComponent', () => {
   let component: PolarPlotComponent;

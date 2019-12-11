@@ -84,13 +84,7 @@ data points are rendered only when the corresponding petal is hoovered over. The
 
 ## The angular demo project
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.0.0.
-
-The git source contains the component code under `src/lib` and the
-angular demo page at `src/demo`. It is a CLI project so:
-
-- Run `ng serve` for a dev server. Navigate to `http://localhost:4200/` to see the demo app and check the effect of different options
-- Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.3.20.
 
 ## Credits
 
