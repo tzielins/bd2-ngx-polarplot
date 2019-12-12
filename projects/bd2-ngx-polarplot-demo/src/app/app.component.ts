@@ -57,14 +57,14 @@ export class AppComponent {
     let s: Subscription;
     s = interval(1000).pipe(
       take(3)
-    ).subscribe( v => this.generateDataInner(3, 15), err => {}, () => {
+    ).subscribe( v => this.generateDataInner(1, 15), err => {}, () => {
       if (s) { s.unsubscribe(); }
     });
   }
 
   generateData() {
-    this.generateDataInner(2, 6);
-    // this.generateDelayedData();
+    // this.generateDataInner(1, 6);
+    this.generateDelayedData();
   }
 
   generateDataInner(nrBase = 1, increase = 5): number[][] {
@@ -106,7 +106,7 @@ export class AppComponent {
     this.labels = labels;
     this.data = rows;
 
-    this.palette = Math.random() > 0.5 ? BD2ColorPalette.palette(10) : ['blue'];
+    this.palette = Math.random() > 0.2 ? BD2ColorPalette.palette(10) : ['blue'];
     return rows;
   }
 
