@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import {interval, Subscription} from 'rxjs';
 import {take} from 'rxjs/operators';
-import {BD2ColorPalette} from './polar-plot-utils/color-palette';
+import {BD2ColorPalette} from '../../../bd2-ngx-polarplot/src/lib/polar-plot-utils/color-palette';
 
 @Component({
   selector: 'app-root',

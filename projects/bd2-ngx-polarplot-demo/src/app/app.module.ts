@@ -3,17 +3,16 @@ import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
 import {FormsModule} from '@angular/forms';
-// import {BD2NgxPolarplotModule} from 'bd2-ngx-polarplot';
-import {PolarPlotComponent} from './polar-plot/polar-plot.component';
+import {BD2NgxPolarplotModule} from 'bd2-ngx-polarplot';
 
 @NgModule({
   declarations: [
-    AppComponent, PolarPlotComponent
+    AppComponent
   ],
   imports: [
     BrowserModule,
     FormsModule,
-    // BD2NgxPolarplotModule
+    BD2NgxPolarplotModule
   ],
   providers: [],
   bootstrap: [AppComponent]
