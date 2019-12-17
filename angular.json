@@ -48,7 +48,8 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/bd2-ngx-polarplot-demo",
+            "baseHref": "/bd2-ngx-polarplot/",
+            "outputPath": "docs",
             "index": "projects/bd2-ngx-polarplot-demo/src/index.html",
             "main": "projects/bd2-ngx-polarplot-demo/src/main.ts",
             "polyfills": "projects/bd2-ngx-polarplot-demo/src/polyfills.ts",
