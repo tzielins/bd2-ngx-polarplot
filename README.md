@@ -4,6 +4,8 @@ Angular2, Angular4 (well Angular) component for plotting data in cyclic coordina
 
 ![example](https://cloud.githubusercontent.com/assets/13380238/25580619/4f443636-2e7a-11e7-9c50-c694b5df9a61.jpg)
 
+Interactive demo: https://tzielins.github.io/bd2-ngx-polarplot/
+
 Although it is called polar plot, it is not the de-facto polar plot in the sense in the matlab,
 as the data are one dimensional rather then angle/radius in typical polar plot.
 

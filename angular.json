@@ -60,6 +60,7 @@
               "projects/bd2-ngx-polarplot-demo/src/assets"
             ],
             "styles": [
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "projects/bd2-ngx-polarplot-demo/src/styles.css"
             ],
             "scripts": []
