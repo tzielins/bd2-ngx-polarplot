@@ -1,6 +1,6 @@
 # bd2-ngx-polarplot
 
-Angular2, Angular4 (well Angular) component for plotting data in cyclic coordinates (mod range).
+Angular component for plotting data in cyclic coordinates (mod range).
 
 ![example](https://cloud.githubusercontent.com/assets/13380238/25580619/4f443636-2e7a-11e7-9c50-c694b5df9a61.jpg)
 
