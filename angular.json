@@ -14,13 +14,13 @@
           "options": {
             "tsConfig": "projects/bd2-ngx-polarplot/tsconfig.lib.json",
             "project": "projects/bd2-ngx-polarplot/ng-package.json"
-          }
-        ,          "configurations": {
+          },
+          "configurations": {
             "production": {
               "tsConfig": "projects/bd2-ngx-polarplot/tsconfig.lib.prod.json"
             }
           }
-},
+        },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
@@ -161,6 +161,10 @@
           }
         }
       }
-    }},
-  "defaultProject": "bd2-ngx-polarplot"
+    }
+  },
+  "defaultProject": "bd2-ngx-polarplot",
+  "cli": {
+    "analytics": "75323db8-1019-4c15-ae8e-bc8f7042c4a5"
+  }
 }
