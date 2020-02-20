@@ -15,7 +15,12 @@
             "tsConfig": "projects/bd2-ngx-polarplot/tsconfig.lib.json",
             "project": "projects/bd2-ngx-polarplot/ng-package.json"
           }
-        },
+        ,          "configurations": {
+            "production": {
+              "tsConfig": "projects/bd2-ngx-polarplot/tsconfig.lib.prod.json"
+            }
+          }
+},
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
@@ -54,7 +59,7 @@
             "main": "projects/bd2-ngx-polarplot-demo/src/main.ts",
             "polyfills": "projects/bd2-ngx-polarplot-demo/src/polyfills.ts",
             "tsConfig": "projects/bd2-ngx-polarplot-demo/tsconfig.app.json",
-            "aot": false,
+            "aot": true,
             "assets": [
               "projects/bd2-ngx-polarplot-demo/src/favicon.ico",
               "projects/bd2-ngx-polarplot-demo/src/assets"
@@ -78,7 +83,6 @@
               "sourceMap": false,
               "extractCss": true,
               "namedChunks": false,
-              "aot": true,
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true,
