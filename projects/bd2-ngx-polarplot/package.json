@@ -1,6 +1,6 @@
 {
   "name": "bd2-ngx-polarplot",
-  "version": "1.10.0",
+  "version": "1.10.1",
   "license": "MIT",
   "keywords": [
     "d3",
@@ -24,11 +24,11 @@
   },
   "devDependencies": {
     "tslib": "^1.10.0",
-    "tslint": "~5.15.0",
+    "tslint": "~6.1.0",
     "@types/d3": "^5.7.2"
   },
   "peerDependencies": {
-    "@angular/common": "~9.0.2",
-    "@angular/core": "~9.0.2"
+    "@angular/common": "~9.1.0",
+    "@angular/core": "~9.1.0"
   }
 }
