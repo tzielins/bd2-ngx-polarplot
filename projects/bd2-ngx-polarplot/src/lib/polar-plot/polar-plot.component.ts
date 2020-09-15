@@ -14,7 +14,7 @@ import {
   SimpleChanges
 } from '@angular/core';
 import {D3, d3} from '../d3service';
-import {Selection} from 'd3-selection';
+import {Selection} from 'd3';
 import {PolarDomainUtil} from '../polar-plot-utils/polar-domain-util';
 import {SmartRounder} from '../polar-plot-utils/smart-rounding';
 import {PetalNode, PolarPoint} from '../polar-plot-utils/polar-plot.dom';
@@ -220,6 +220,11 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
     // .style('opacity', 1);
     ;
 
+    // it has to be before the box cause of the bug in firefox
+    this.graphicContext.legendtip
+      // .style("visibility", "visible");
+      .style('display', null);
+
     const bbox = this.graphicContext.legendtipText.node().getBBox();
 
     this.graphicContext.legendtipBox
@@ -228,9 +233,7 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
       .attr('width', bbox.width + 6)
       .attr('height', bbox.height + 4);
 
-    this.graphicContext.legendtip
-    // .style("visibility", "visible");
-      .style('display', null);
+
   }
 
   hideLegendtip() {
@@ -282,6 +285,11 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
     // .style('opacity', 1);
     ;
 
+    // it has to be before the get BBox cause of the firefox errors
+    this.graphicContext.tooltip
+      // .style("visibility", "visible");
+      .style('display', null);
+
     const bbox = this.graphicContext.tooltipText.node().getBBox();
 
     this.graphicContext.tooltipBox
@@ -290,9 +298,7 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
       .attr('width', bbox.width + 6)
       .attr('height', bbox.height + 4);
 
-    this.graphicContext.tooltip
-    // .style("visibility", "visible");
-      .style('display', null);
+
   }
 
   hideTooltip() {
@@ -427,7 +433,7 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
         .attr('d', petalLine as any)
         .style('fill', d => d.color)
         .style('fill-opacity', this.lookAndFeel.petalAreaOpacity)
-        .on('interrupt', function(d, ix) {
+        .on('interrupt', function(evt: MouseEvent, d: PetalNode) {
           d3.select(this)
             .attr('d', petalLine as any)
             .style('fill', _ => d.color)
@@ -442,7 +448,7 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
         .style('stroke', d => d.color)
         .style('stroke-opacity', 1)
         .style('stroke-width', this.lookAndFeel.petalLineWidth)
-        .on('interrupt', function(d, ix) {
+        .on('interrupt', function(evt: MouseEvent, d: PetalNode) {
           d3.select(this)
             .attr('d', petalLine as any)
             .style('stroke', _ => d.color)
@@ -460,7 +466,7 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
           return radius * d.polarCoordinates[1]; // Math.sin(d * 2 * Math.PI / 24 - Math.PI / 2);
         })
         .style('fill', d => d.color)
-        .on('interrupt', function(d, ix) {
+        .on('interrupt', function(evt: MouseEvent, d: PetalNode) {
           d3.select(this)
             .attr('cx', function(_: PetalNode, i) {
               return radius * d.polarCoordinates[0]; // Math.cos(d * 2 * Math.PI / 24 - Math.PI / 2);
@@ -478,13 +484,14 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
         .attr('class', 'petal');
 
 
-      newPetals
-        .append('path')
+      const petalsArea = newPetals.append('path');
+
+      petalsArea
         .attr('class', 'petalsArea')
         .attr('d', petalLine as any)
         .style('fill', d => d.color)
         .style('fill-opacity', 0)
-        .on('mouseover', function(d, i) {
+        .on('mouseover', function(evt: MouseEvent, d: PetalNode) {
 
           d3.select(this)
             .transition().duration(transitionsTime)
@@ -492,7 +499,14 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
 
           instance.showTooltip(d, radius);
           instance.showLegendtip(d, radius);
-          instance.showIndividualDataInset(d, i, radius);
+
+          const e = petalsArea.nodes();
+          console.log("Nodes",e);
+          console.log("T", this);
+          console.log("S",d3.select(this));
+          const ix = e.indexOf(this);
+
+          instance.showIndividualDataInset(d, ix, radius);
 
         })
         .on('mouseout', function() {
@@ -538,8 +552,8 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
         .style('fill-opacity', this.lookAndFeel.petalCircleOpacity);
 
       petals.exit()
-        //.transition().duration(transitionsTime / 2)
-        //.style('opacity', 0.0)
+        // .transition().duration(transitionsTime / 2)
+        // .style('opacity', 0.0)
         .remove();
 
       const petalsAll: Selection<SVGGElement, PetalNode, null, undefined> = petalsWrapper.selectAll('.petal')
@@ -602,6 +616,8 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
 
     const d3 = this.d3;
 
+    console.log("Ix",ix);
+    console.log("D",this.individualPolarData[ix]);
     const individuals = this.individualPolarData[ix];
 
 
