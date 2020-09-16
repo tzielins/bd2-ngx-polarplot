@@ -77,6 +77,14 @@ describe('Polar domain util', () => {
       expect(petal.peak).toBe(22);
 
 
+
+    });
+
+    it('adds individual points', () => {
+      const petal = util.dataToPetal([20, 10], [0, 24, 24]);
+      expect(petal.individuals).not.toEqual([]);
+      expect(petal.individuals.length).toBe(2);
+      expect(petal.individuals[1].xy).toEqual(util.normalizedPeakToPolar(10,24));
     });
   });
 

@@ -1,4 +1,9 @@
 
+
+export class PolarPoint {
+  constructor(public xy: number[], public color: string, public hidden?: boolean) {}
+}
+
 export class PetalNode {
 
   peak: number;
@@ -12,8 +17,7 @@ export class PetalNode {
   label: string;
   color: string;
   hidden: boolean;
+
+  individuals: PolarPoint[] = [];
 }
 
-export class PolarPoint {
-  constructor(public xy: number[], public color: string, public hidden?: boolean) {}
-}

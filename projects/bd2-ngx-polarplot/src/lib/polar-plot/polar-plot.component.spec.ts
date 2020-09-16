@@ -27,6 +27,7 @@ describe('PolarPlotComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  /*
   it('prepareIndividualPolarData converts to polar and adds color ix', () => {
 
     const data = [[15, 16], [2, 2], [3]];
@@ -37,7 +38,7 @@ describe('PolarPlotComponent', () => {
     expect(ans.length).toBe(3);
     expect(ans[2].length).toBe(1);
     expect(ans[2][0].color).toBe(palette[2]);
-  });
+  });*/
 
   it('emits new palete after update', async(() => {
 
@@ -105,7 +106,7 @@ describe('PolarPlotComponent', () => {
     const p = (new PolarDomainUtil()).dataToPetal([2, 1, 3], [0, 24, 24]);
     // have to call it manually fixture detectChanges does not work
     component.ngOnChanges({});
-    component.showIndividualDataInset(p, 1, 1);
+    component.showIndividualDataInset(p, 1);
     // fixture.detectChanges();
 
     fixture.whenStable().then( () => {

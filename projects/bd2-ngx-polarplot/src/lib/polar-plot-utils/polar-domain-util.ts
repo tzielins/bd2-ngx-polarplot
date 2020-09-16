@@ -1,4 +1,4 @@
-import {PetalNode} from './polar-plot.dom';
+import {PetalNode, PolarPoint} from './polar-plot.dom';
 import {d3} from '../d3service';
 import {SmartRounder} from './smart-rounding';
 
@@ -33,9 +33,20 @@ export class PolarDomainUtil {
 
     // shift back after normalization
     node.peak = node.peak + domain[0];
+
+    node.individuals = this.dataToPolarPoint(data, domain);
     return node;
   }
 
+  dataToPolarPoint(data: number[], domain: number[]): PolarPoint[] {
+
+    const ind = data.map(a => {
+      const v = new PolarPoint(this.calculatePolarCoordinate(a, domain), undefined);
+      return v;
+    });
+
+    return ind;
+  }
 
   calculateCircularMeanAndDev(data: number[], domain: number[]) {
 
