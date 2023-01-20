@@ -439,7 +439,6 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
         .style('fill', d => d.color)
         .style('fill-opacity', this.lookAndFeel.petalAreaOpacity)
         .on('interrupt', function(d: PetalNode) {
-          console.log("petalsArea", d);
           d3.select(this)
             .attr('d', petalLine as any)
             .style('fill', _ => d.color)
@@ -455,7 +454,6 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
         .style('stroke-opacity', 1)
         .style('stroke-width', this.lookAndFeel.petalLineWidth)
         .on('interrupt', function( d: PetalNode) {
-          console.log("petalsLine", d);
           d3.select(this)
             .attr('d', petalLine as any)
             .style('stroke', _ => d.color)
