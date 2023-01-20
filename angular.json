@@ -143,7 +143,6 @@
       }
     }
   },
-  "defaultProject": "bd2-ngx-polarplot",
   "cli": {
     "analytics": "75323db8-1019-4c15-ae8e-bc8f7042c4a5"
   }
