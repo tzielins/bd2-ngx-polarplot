@@ -32,15 +32,15 @@ import {GraphicContext, LookAndFeel, ShowIndividualsOptions} from './polar-plot.
   `,
   styles: [
     `
-      :host /deep/ .axis .legend {
+      :host ::ng-deep .axis .legend {
         font-size: 15px;
       }
 
-      :host /deep/ .tooltip {
+      :host ::ng-deep .tooltip {
         font-size: 15px;
       }
 
-      :host /deep/ .legendtip {
+      :host ::ng-deep .legendtip {
         font-size: 18px;
       }
     `
