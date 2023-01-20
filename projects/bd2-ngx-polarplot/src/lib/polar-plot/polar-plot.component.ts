@@ -20,6 +20,7 @@ import {SmartRounder} from '../polar-plot-utils/smart-rounding';
 import {PetalNode, PolarPoint} from '../polar-plot-utils/polar-plot.dom';
 import {BD2ColorPalette} from '../polar-plot-utils/color-palette';
 import {GraphicContext, LookAndFeel, ShowIndividualsOptions} from './polar-plot.dom';
+import {BaseType} from "d3-selection";
 
 
 
@@ -437,7 +438,8 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
         .attr('d', petalLine as any)
         .style('fill', d => d.color)
         .style('fill-opacity', this.lookAndFeel.petalAreaOpacity)
-        .on('interrupt', function(evt: MouseEvent, d: PetalNode) {
+        .on('interrupt', function(d: PetalNode) {
+          console.log("petalsArea", d);
           d3.select(this)
             .attr('d', petalLine as any)
             .style('fill', _ => d.color)
@@ -452,7 +454,8 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
         .style('stroke', d => d.color)
         .style('stroke-opacity', 1)
         .style('stroke-width', this.lookAndFeel.petalLineWidth)
-        .on('interrupt', function(evt: MouseEvent, d: PetalNode) {
+        .on('interrupt', function( d: PetalNode) {
+          console.log("petalsLine", d);
           d3.select(this)
             .attr('d', petalLine as any)
             .style('stroke', _ => d.color)
@@ -470,7 +473,7 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
           return radius * d.polarCoordinates[1]; // Math.sin(d * 2 * Math.PI / 24 - Math.PI / 2);
         })
         .style('fill', d => d.color)
-        .on('interrupt', function(evt: MouseEvent, d: PetalNode) {
+        .on('interrupt', function(d: PetalNode) {
           d3.select(this)
             .attr('cx', function(_: PetalNode, i) {
               return radius * d.polarCoordinates[0]; // Math.cos(d * 2 * Math.PI / 24 - Math.PI / 2);
