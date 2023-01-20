@@ -1,5 +1,5 @@
 
-import { async, ComponentFixture, TestBed} from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { PolarPlotComponent } from './polar-plot.component';
 import { PolarPoint} from '../polar-plot-utils/polar-plot.dom';
@@ -10,7 +10,7 @@ describe('PolarPlotComponent', () => {
   let component: PolarPlotComponent;
   let fixture: ComponentFixture<PolarPlotComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ PolarPlotComponent ]
     })
@@ -40,7 +40,7 @@ describe('PolarPlotComponent', () => {
     expect(ans[2][0].color).toBe(palette[2]);
   });*/
 
-  it('emits new palete after update', async(() => {
+  it('emits new palete after update', waitForAsync(() => {
 
     component.data = [[15, 16], [2], [3]];
     component.domain = [12, 24];
@@ -57,7 +57,7 @@ describe('PolarPlotComponent', () => {
 
   }));
 
-  it('creates a plot with two petals and data points', async(() => {
+  it('creates a plot with two petals and data points', waitForAsync(() => {
     component.data = [[15, 16], [2]];
     component.domain = [12, 24];
     component.showIndividuals = 'all';
@@ -98,7 +98,7 @@ describe('PolarPlotComponent', () => {
   }));
 
 
-  it('shows inset with individual data points', async(() => {
+  it('shows inset with individual data points', waitForAsync(() => {
     component.data = [[15], [2, 1, 3]];
     component.domain = [12, 24];
     component.showIndividuals = 'selected';
