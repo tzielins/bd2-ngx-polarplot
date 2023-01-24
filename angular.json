@@ -12,24 +12,35 @@
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
-            "tsConfig": "projects/bd2-ngx-polarplot/tsconfig.lib.json",
             "project": "projects/bd2-ngx-polarplot/ng-package.json"
           },
           "configurations": {
             "production": {
               "tsConfig": "projects/bd2-ngx-polarplot/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/bd2-ngx-polarplot/tsconfig.lib.json"
             }
-          }
+          },
+          "defaultConfiguration": "production"
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
-           "options": {
+          "options": {
+            "tsConfig": "projects/bd2-ngx-polarplot/tsconfig.spec.json",
             "polyfills": [
               "zone.js",
               "zone.js/testing"
-            ],			  
-            "main": "projects/bd2-ngx-polarplot/src/test.ts",
-            "tsConfig": "projects/bd2-ngx-polarplot/tsconfig.spec.json",
+            ]
+          }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "projects/bd2-ngx-polarplot/**/*.ts",
+              "projects/bd2-ngx-polarplot/**/*.html"
+            ]
           }
         }
       }
@@ -48,7 +59,9 @@
             "outputPath": "docs",
             "index": "projects/bd2-ngx-polarplot-demo/src/index.html",
             "main": "projects/bd2-ngx-polarplot-demo/src/main.ts",
-            "polyfills": "projects/bd2-ngx-polarplot-demo/src/polyfills.ts",
+            "polyfills": [
+              "zone.js"
+            ],
             "tsConfig": "projects/bd2-ngx-polarplot-demo/tsconfig.app.json",
             "assets": [
               "projects/bd2-ngx-polarplot-demo/src/favicon.ico",
@@ -58,55 +71,46 @@
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "projects/bd2-ngx-polarplot-demo/src/styles.css"
             ],
-            "scripts": [],
-            "vendorChunk": true,
-            "extractLicenses": false,
-            "buildOptimizer": false,
-            "sourceMap": true,
-            "optimization": false,
-            "namedChunks": true
+            "scripts": []
           },
           "configurations": {
             "production": {
-              "fileReplacements": [
-                {
-                  "replace": "projects/bd2-ngx-polarplot-demo/src/environments/environment.ts",
-                  "with": "projects/bd2-ngx-polarplot-demo/src/environments/environment.prod.ts"
-                }
-              ],
-              "optimization": true,
-              "outputHashing": "all",
-              "sourceMap": false,
-              "namedChunks": false,
-              "extractLicenses": true,
-              "vendorChunk": false,
-              "buildOptimizer": true,
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "5mb"
+                  "maximumWarning": "500kb",
+                  "maximumError": "1mb"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "6kb",
-                  "maximumError": "10kb"
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
                 }
-              ]
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
             }
           },
-          "defaultConfiguration": ""
+          "defaultConfiguration": "production"
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
-          "options": {
-            "browserTarget": "bd2-ngx-polarplot-demo:build"
-          },
           "configurations": {
             "production": {
               "browserTarget": "bd2-ngx-polarplot-demo:build:production"
+            },
+            "development": {
+              "browserTarget": "bd2-ngx-polarplot-demo:build:development"
             }
-          }
+          },
+          "defaultConfiguration": "development"
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
@@ -120,8 +124,7 @@
             "polyfills": [
               "zone.js",
               "zone.js/testing"
-            ],			  
-            "main": "projects/bd2-ngx-polarplot-demo/src/test.ts",
+            ],
             "tsConfig": "projects/bd2-ngx-polarplot-demo/tsconfig.spec.json",
             "assets": [
               "projects/bd2-ngx-polarplot-demo/src/favicon.ico",
@@ -133,22 +136,16 @@
             "scripts": []
           }
         },
-        "e2e": {
-          "builder": "@angular-devkit/build-angular:protractor",
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
           "options": {
-            "protractorConfig": "projects/bd2-ngx-polarplot-demo/e2e/protractor.conf.js",
-            "devServerTarget": "bd2-ngx-polarplot-demo:serve"
-          },
-          "configurations": {
-            "production": {
-              "devServerTarget": "bd2-ngx-polarplot-demo:serve:production"
-            }
+            "lintFilePatterns": [
+              "projects/bd2-ngx-polarplot-demo/**/*.ts",
+              "projects/bd2-ngx-polarplot-demo/**/*.html"
+            ]
           }
         }
       }
     }
-  },
-  "cli": {
-    "analytics": "75323db8-1019-4c15-ae8e-bc8f7042c4a5"
   }
 }

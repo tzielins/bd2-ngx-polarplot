@@ -50,7 +50,7 @@ export class AppModule { }
 3. Inputs
 
 - `data: number[][]` series of data to represents as petals.
-For example:
+  For example:
 ```
 data = [
 [-23.4,1,25.2,48.7,73.1],
@@ -62,11 +62,11 @@ data = [
 gives 4 petals as in the screenshot
 
 - `domain: [start, end]` data will be represented around the circle `[start,end)` mod domain range.
-Start does not have to be 0. The example above is made with domain `[0,24]`
+  Start does not have to be 0. The example above is made with domain `[0,24]`
 
 - `showIndividuals: node | selected | all`, defaults `selected`. Determines how individual data points are presented,
-none no rendering, all, all data points are represented as cricles in the corresponding locations, selected the individual
-data points are rendered only when the corresponding petal is hoovered over. The example above is taken with option `all`
+  none no rendering, all, all data points are represented as cricles in the corresponding locations, selected the individual
+  data points are rendered only when the corresponding petal is hoovered over. The example above is taken with option `all`
 
 - `scaleRadius: boolean`, default true, petals radius/length is scalled by the std deviationo of the data or provided errors. The larger the deviation/error the shorted the petal
 

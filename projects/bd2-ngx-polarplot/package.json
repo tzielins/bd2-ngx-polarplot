@@ -1,10 +1,10 @@
 {
   "name": "bd2-ngx-polarplot",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "license": "MIT",
   "keywords": [
     "d3",
-    "d3 4.x",
+    "d3 7.x",
     "angular",
     "ngx",
     "polar plot",
@@ -19,13 +19,13 @@
     "type": "git",
     "url": "https://github.com/tzielins/bd2-ngx-polarplot"
   },
-  "dependencies": {
+  "peerDependencies": {
+    "@angular/common": "^15.1.0",
+    "@angular/core": "^15.1.0",
     "d3": "^7.8.2"
   },
-  "devDependencies": {
-
+  "dependencies": {
+    "tslib": "^2.3.0"
   },
-  "peerDependencies": {
-
-  }
+  "sideEffects": false
 }

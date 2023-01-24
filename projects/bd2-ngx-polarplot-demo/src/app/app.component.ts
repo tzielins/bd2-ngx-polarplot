@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import {interval, Subscription} from 'rxjs';
 import {take} from 'rxjs/operators';
 import {BD2ColorPalette} from '../../../bd2-ngx-polarplot/src/lib/polar-plot-utils/color-palette';
+import {ShowIndividualsOptions} from "../../../bd2-ngx-polarplot/src/lib/polar-plot/polar-plot.dom";
 
 @Component({
   selector: 'app-root',
@@ -15,8 +16,8 @@ export class AppComponent {
   labels: string[] = [];
   removed: number[] = [];
 
-  domain = [0, 24];
-  indiv = 'selected';
+  domain : [number,number] = [0, 24];
+  indiv: ShowIndividualsOptions = 'selected';
   hidden = false;
 
   show = 'selected';
