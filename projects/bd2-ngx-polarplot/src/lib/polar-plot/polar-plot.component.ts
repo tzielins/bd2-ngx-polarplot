@@ -13,14 +13,15 @@ import {
   OnInit,
   SimpleChanges
 } from '@angular/core';
-import {D3, d3} from '../d3service';
+
 import {Selection} from 'd3';
+import * as d3 from 'd3';
 import {PolarDomainUtil} from '../polar-plot-utils/polar-domain-util';
 import {SmartRounder} from '../polar-plot-utils/smart-rounding';
 import {PetalNode, PolarPoint} from '../polar-plot-utils/polar-plot.dom';
 import {BD2ColorPalette} from '../polar-plot-utils/color-palette';
 import {GraphicContext, LookAndFeel, ShowIndividualsOptions} from './polar-plot.dom';
-import {BaseType} from "d3-selection";
+
 
 
 
@@ -90,7 +91,7 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
   @Output()
   colors = new EventEmitter<string[]>();
 
-  private d3: D3;
+  private d3;
   private parentNativeElement: any;
   private polarUtil: PolarDomainUtil;
   private d3Svg: Selection<SVGSVGElement, any, null, undefined>;
@@ -164,7 +165,7 @@ export class PolarPlotComponent implements OnInit, AfterViewInit, OnChanges, OnD
     const pHeight = 500;
 
     const d3ParentElement = this.d3.select(this.parentNativeElement);
-    this.d3Svg = d3ParentElement.select('.polarplot').append<SVGSVGElement>('svg');
+    this.d3Svg = d3ParentElement.select('.polarplot').append('svg');
 
 
     this.d3Svg.attr('width', '100%')

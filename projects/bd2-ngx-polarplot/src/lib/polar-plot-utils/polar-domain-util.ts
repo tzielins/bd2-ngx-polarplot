@@ -1,5 +1,5 @@
 import {PetalNode, PolarPoint} from './polar-plot.dom';
-import {d3} from '../d3service';
+import * as d3 from 'd3';
 import {SmartRounder} from './smart-rounding';
 
 

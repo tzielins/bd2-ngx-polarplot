@@ -10,7 +10,7 @@
     "polar plot",
     "phase plot"
   ],
-  "private": false,
+  "private": true,
   "author": {
     "name": "Tomasz Zielinski",
     "url": "https://github.com/tzielins"
